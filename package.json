@@ -1,0 +1,16 @@
+{
+	"license": "MIT",
+	"name": "slack",
+	"version": "1.0.0",
+	"description": "Slidrr",
+	"private": true,
+	"author": "Matthijs Kamstra aka [mck]",
+	"scripts": {
+		"prewatch": "haxe build.hxml",
+		"watch": "onchange 'src/*.hx' 'src/*.md' -v -- haxe build.hxml & livereload bin/"
+	},
+	"devDependencies": {
+		"livereload": "^0.3.7",
+		"onchange": "^2.0.0"
+	}
+}
