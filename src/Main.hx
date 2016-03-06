@@ -17,9 +17,28 @@ class Main {
 	private var _currentId : Int = 0;
 	private var _prevId : Int = 0;
 	
+	private var isFullScreen : Bool = false;
+	
 	public function new () {
-		_doc.addEventListener("DOMContentLoaded", function(event) {
-    		readTextFile('slidrr.md');
+		_doc.addEventListener("DOMContentLoaded", function(event) 
+		{	
+			var markdown = 'slidrr.md';
+			
+			// ?md=slidrrtest.md&author=mck
+			var map : Map<String, String> = new Map();
+			var arr = _win.location.search.substr(1).split("&");
+			for ( i in 0 ... arr.length ) {
+				var temp = arr[i].split("=");
+				map.set(temp[0],temp[1]);
+			}
+			
+			trace((map.exists('author')) ? (map.get('author')) : 'niets');
+			
+			if(map.exists('md')){
+				markdown = map.get('md');
+			}
+			
+    		readTextFile(markdown);
 		});
 	}
 	
@@ -128,13 +147,68 @@ class Main {
 		progress.style.width = Std.string(percentage) + '%';		
 	}
 
+
+
+	public function toggleFullscreen () : Void 
+	{	
+		if(!isFullScreen)
+		{
+			isFullScreen = true;
+			var elem = _doc.documentElement;
+			if (untyped elem.requestFullscreen) {
+				untyped elem.requestFullscreen();
+			} else if (untyped elem.msRequestFullscreen) {
+				untyped elem.msRequestFullscreen();
+			} else if (untyped elem.mozRequestFullScreen) {
+				untyped elem.mozRequestFullScreen();
+			} else if (untyped elem.webkitRequestFullscreen) {
+				untyped elem.webkitRequestFullscreen();
+			}
+		} else {
+			isFullScreen = false;
+			if (untyped _doc.exitFullscreen) {
+				untyped _doc.exitFullscreen();
+			} else if (untyped _doc.msExitFullscreen) {
+				untyped _doc.msExitFullscreen();
+			} else if (untyped _doc.mozCancelFullScreen) {
+				untyped _doc.mozCancelFullScreen();
+			} else if (untyped _doc.webkitExitFullscreen) {
+				untyped _doc.webkitExitFullscreen();
+			}
+		} 
+	}
+
+
+
+	function showHelp () : Void {
+		trace('showHelp');
+	}
+
+	function showBlackScreen () : Void {
+		trace('showBlackScreen');
+	}
+
+	function showSpeakerNotes () : Void {
+		trace('showSpeakerNotes');
+	}
+
 	// ____________________________________ handlers ____________________________________
 
 	function onKeyHandler(e:KeyboardEvent) : Void 
 	{
+		// trace(e.keyCode);
 		switch (e.keyCode) {
-			case 37 : move(-1);
-			case 39 : move(1);
+			case 37 : move(-1); // cursor left
+			case 188 : move(-1); // , <
+			case 39 : move(1); // cursor right
+			case 32 : move(1); // space
+			case 190 : move(1); // . >
+			case 70 : toggleFullscreen(); // f / fullscreen
+			case 72 : showHelp(); // h / help
+			case 66 : showBlackScreen(); // b / black
+			case 83 : showSpeakerNotes();  // s / speaker note
+			
+			
 		}
 	}
 	
