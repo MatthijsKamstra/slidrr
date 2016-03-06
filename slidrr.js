@@ -101,13 +101,26 @@ HxOverrides.iter = function(a) {
 	}};
 };
 var Main = function() {
+	this.isFullScreen = false;
 	this._prevId = 0;
 	this._currentId = 0;
 	this._win = window;
 	this._doc = window.document;
 	var _g = this;
 	this._doc.addEventListener("DOMContentLoaded",function(event) {
-		_g.readTextFile("slidrr.md");
+		var markdown = "slidrr.md";
+		var map = new haxe_ds_StringMap();
+		var arr = HxOverrides.substr(_g._win.location.search,1,null).split("&");
+		var _g2 = 0;
+		var _g1 = arr.length;
+		while(_g2 < _g1) {
+			var i = _g2++;
+			var temp = arr[i].split("=");
+			map.set(temp[0],temp[1]);
+		}
+		console.log((__map_reserved.author != null?map.existsReserved("author"):map.h.hasOwnProperty("author"))?__map_reserved.author != null?map.getReserved("author"):map.h["author"]:"niets");
+		if(__map_reserved.md != null?map.existsReserved("md"):map.h.hasOwnProperty("md")) markdown = __map_reserved.md != null?map.getReserved("md"):map.h["md"];
+		_g.readTextFile(markdown);
 	});
 };
 Main.__name__ = true;
@@ -186,14 +199,54 @@ Main.prototype = {
 		var progress = this._doc.getElementsByClassName("progress-bar")[0];
 		progress.style.width = (percentage == null?"null":"" + percentage) + "%";
 	}
+	,toggleFullscreen: function() {
+		if(!this.isFullScreen) {
+			this.isFullScreen = true;
+			var elem = this._doc.documentElement;
+			if($bind(elem,elem.requestFullscreen)) elem.requestFullscreen(); else if(elem.msRequestFullscreen) elem.msRequestFullscreen(); else if(elem.mozRequestFullScreen) elem.mozRequestFullScreen(); else if(elem.webkitRequestFullscreen) elem.webkitRequestFullscreen();
+		} else {
+			this.isFullScreen = false;
+			if(($_=this._doc,$bind($_,$_.exitFullscreen))) this._doc.exitFullscreen(); else if(this._doc.msExitFullscreen) this._doc.msExitFullscreen(); else if(this._doc.mozCancelFullScreen) this._doc.mozCancelFullScreen(); else if(this._doc.webkitExitFullscreen) this._doc.webkitExitFullscreen();
+		}
+	}
+	,showHelp: function() {
+		console.log("showHelp");
+	}
+	,showBlackScreen: function() {
+		console.log("showBlackScreen");
+	}
+	,showSpeakerNotes: function() {
+		console.log("showSpeakerNotes");
+	}
 	,onKeyHandler: function(e) {
 		var _g = e.keyCode;
 		switch(_g) {
 		case 37:
 			this.move(-1);
 			break;
+		case 188:
+			this.move(-1);
+			break;
 		case 39:
 			this.move(1);
+			break;
+		case 32:
+			this.move(1);
+			break;
+		case 190:
+			this.move(1);
+			break;
+		case 70:
+			this.toggleFullscreen();
+			break;
+		case 72:
+			this.showHelp();
+			break;
+		case 66:
+			this.showBlackScreen();
+			break;
+		case 83:
+			this.showSpeakerNotes();
 			break;
 		}
 	}
@@ -384,6 +437,10 @@ haxe_ds_StringMap.prototype = {
 	}
 	,getReserved: function(key) {
 		if(this.rh == null) return null; else return this.rh["$" + key];
+	}
+	,existsReserved: function(key) {
+		if(this.rh == null) return false;
+		return this.rh.hasOwnProperty("$" + key);
 	}
 	,keys: function() {
 		var _this = this.arrayKeys();
@@ -1436,6 +1493,8 @@ markdown_TagState.prototype = {
 	}
 	,__class__: markdown_TagState
 };
+var $_, $fid = 0;
+function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $fid++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = function(){ return f.method.apply(f.scope, arguments); }; f.scope = o; f.method = m; o.hx__closures__[m.__id__] = f; } return f; }
 if(Array.prototype.indexOf) HxOverrides.indexOf = function(a,o,i) {
 	return Array.prototype.indexOf.call(a,o,i);
 };
