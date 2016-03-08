@@ -1,16 +1,19 @@
-# Skildrr 101
+# Slidrr 101
 
 ## A first look at quick HTML presentations
 
----
+done in plain css, js and html
+
+--
 
 ### A textual example
 
-Content can be written in **Markdown!** New lines no longer need two angle brackets.
+Content can be written in **Markdown!**  
+New lines no longer need two angle brackets.  
 
 This will be in a separate paragraph
 
----
+--
 
 ### A list of things
 
@@ -19,3 +22,14 @@ This will be in a separate paragraph
 * Item gamma
 
 No need for multiple templates!
+
+--
+
+# Speaker notes
+
+> Slidrr quote that will blow you mind
+_Matthijs Kamstra aka [mck]_
+
+??
+
+Something clever

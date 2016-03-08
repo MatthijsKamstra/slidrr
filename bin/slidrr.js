@@ -101,6 +101,11 @@ HxOverrides.iter = function(a) {
 	}};
 };
 var Main = function() {
+	this.time = 45;
+	this.author = "";
+	this.markdown = "slidrr.md";
+	this.splitNote = "??";
+	this.spliteSlide = "--";
 	this.isFullScreen = false;
 	this._prevId = 0;
 	this._currentId = 0;
@@ -108,7 +113,6 @@ var Main = function() {
 	this._doc = window.document;
 	var _g = this;
 	this._doc.addEventListener("DOMContentLoaded",function(event) {
-		var markdown = "slidrr.md";
 		var map = new haxe_ds_StringMap();
 		var arr = HxOverrides.substr(_g._win.location.search,1,null).split("&");
 		var _g2 = 0;
@@ -119,8 +123,12 @@ var Main = function() {
 			map.set(temp[0],temp[1]);
 		}
 		console.log((__map_reserved.author != null?map.existsReserved("author"):map.h.hasOwnProperty("author"))?__map_reserved.author != null?map.getReserved("author"):map.h["author"]:"niets");
-		if(__map_reserved.md != null?map.existsReserved("md"):map.h.hasOwnProperty("md")) markdown = __map_reserved.md != null?map.getReserved("md"):map.h["md"];
-		_g.readTextFile(markdown);
+		if(__map_reserved.md != null?map.existsReserved("md"):map.h.hasOwnProperty("md")) _g.markdown = __map_reserved.md != null?map.getReserved("md"):map.h["md"];
+		if(__map_reserved.split != null?map.existsReserved("split"):map.h.hasOwnProperty("split")) _g.spliteSlide = __map_reserved.split != null?map.getReserved("split"):map.h["split"];
+		if(__map_reserved.note != null?map.existsReserved("note"):map.h.hasOwnProperty("note")) _g.splitNote = __map_reserved.note != null?map.getReserved("note"):map.h["note"];
+		if(__map_reserved.author != null?map.existsReserved("author"):map.h.hasOwnProperty("author")) _g.author = __map_reserved.author != null?map.getReserved("author"):map.h["author"];
+		if(__map_reserved.time != null?map.existsReserved("time"):map.h.hasOwnProperty("time")) _g.time = Std.parseInt(__map_reserved.time != null?map.getReserved("time"):map.h["time"]);
+		_g.readTextFile(_g.markdown);
 	});
 };
 Main.__name__ = true;
@@ -130,18 +138,24 @@ Main.main = function() {
 Main.prototype = {
 	build: function(md) {
 		var _g = this;
-		var slides = md.split("---");
+		this.flexContainer = this._doc.createElement("div");
+		this.flexContainer.className = "container";
+		this._doc.body.appendChild(this.flexContainer);
+		var slides = md.split(this.spliteSlide);
 		this._total = slides.length;
 		var _g1 = 0;
 		var _g2 = this._total;
 		while(_g1 < _g2) {
 			var i = _g1++;
-			var slideHTML = Markdown.markdownToHtml(slides[i]);
+			var slideArr = slides[i].split(this.splitNote);
+			var slideHTML = Markdown.markdownToHtml(slideArr[0]);
+			var noteHTML;
+			if(slideArr.length > 1) noteHTML = Markdown.markdownToHtml(slideArr[1]); else noteHTML = "";
 			var div = this._doc.createElement("div");
 			div.id = "slide_" + i;
 			div.className = "slidrr hidden";
-			div.innerHTML = slideHTML;
-			this._doc.body.appendChild(div);
+			div.innerHTML = slideHTML + "<!-- \n" + noteHTML + "\n -->";
+			this.flexContainer.appendChild(div);
 		}
 		this.slideId(0,true);
 		this._win.onkeydown = function(e) {
@@ -150,6 +164,7 @@ Main.prototype = {
 		this.buildProgress();
 		this.buildControle();
 		this.buildHelp();
+		this.buildLogo();
 	}
 	,buildProgress: function() {
 		var _container = this._doc.createElement("div");
@@ -179,10 +194,20 @@ Main.prototype = {
 	,buildHelp: function() {
 		var _container = this._doc.createElement("div");
 		_container.className = "help";
-		var _logo = this._doc.createElement("div");
-		_logo.className = "logo";
-		_container.appendChild(_logo);
+		_container.innerHTML = Markdown.markdownToHtml(this.showDefaults());
 		this._doc.body.appendChild(_container);
+	}
+	,buildLogo: function() {
+		var _container = this._doc.createElement("div");
+		_container.className = "logo";
+		this._doc.body.appendChild(_container);
+	}
+	,showDefaults: function() {
+		var str = "\n\t\t\n| action | shortcut |\n| --- | --- |\n| forward | `cursor right` , `.` , `space` |\n| reverse | `cursor left` , `,` | \n| fullscreen | `f` | \n| help | `h` | \n| create black screen | `b` | \n| reverse fullscreen | `esc` | \n| speaker notes | `s` | \n";
+		str += "markdown: " + this.markdown;
+		str += "slide split: " + this.spliteSlide;
+		str += "note split: " + this.splitNote;
+		return str;
 	}
 	,slideId: function(id,isVisible) {
 		var slide = this._doc.getElementById("slide_" + id);
@@ -369,6 +394,12 @@ var Std = function() { };
 Std.__name__ = true;
 Std.string = function(s) {
 	return js_Boot.__string_rec(s,"");
+};
+Std.parseInt = function(x) {
+	var v = parseInt(x,10);
+	if(v == 0 && (HxOverrides.cca(x,1) == 120 || HxOverrides.cca(x,1) == 88)) v = parseInt(x);
+	if(isNaN(v)) return null;
+	return v;
 };
 var StringBuf = function() {
 	this.b = "";

@@ -7,7 +7,6 @@ import js.html.XMLHttpRequest;
 
 class Main {
 	
-	
 	private var _doc = js.Browser.document;
 	private var _win = js.Browser.window;
 	
@@ -19,11 +18,21 @@ class Main {
 	
 	private var isFullScreen : Bool = false;
 	
-	public function new () {
+	// default
+	private var spliteSlide 	: String = '--';
+	private var splitNote 		: String = '??';
+	private var markdown 		: String = 'slidrr.md'; 
+	private var author 			: String = ''; 
+	private var time 			: Int = 45; // min
+
+	private var queryArr : Array<String> = ['md', 'split', 'note', 'author', 'time'];
+
+	private var flexContainer : DivElement;
+	
+	public function new () 
+	{
 		_doc.addEventListener("DOMContentLoaded", function(event) 
 		{	
-			var markdown = 'slidrr.md';
-			
 			// ?md=slidrrtest.md&author=mck
 			var map : Map<String, String> = new Map();
 			var arr = _win.location.search.substr(1).split("&");
@@ -33,10 +42,12 @@ class Main {
 			}
 			
 			trace((map.exists('author')) ? (map.get('author')) : 'niets');
-			
-			if(map.exists('md')){
-				markdown = map.get('md');
-			}
+			// your code
+			if(map.exists('md')) 		markdown = map.get('md');
+			if(map.exists('split')) 	spliteSlide = map.get('split');
+			if(map.exists('note')) 		splitNote = map.get('note');
+			if(map.exists('author'))	author = map.get('author');
+			if(map.exists('time')) 		time = Std.parseInt (map.get('time'));
 			
     		readTextFile(markdown);
 		});
@@ -44,16 +55,22 @@ class Main {
 	
 	private function build(md:String) : Void
 	{
-		var slides : Array<String> = md.split('---');
+		flexContainer = _doc.createDivElement();
+		flexContainer.className = 'container';
+		_doc.body.appendChild(flexContainer);
+
+		var slides : Array<String> = md.split(spliteSlide);
 		_total = slides.length;
 		for ( i in 0 ... _total ) {
 			// trace(slides[i]);
-			var slideHTML = Markdown.markdownToHtml(slides[i]);
+			var slideArr = slides[i].split(splitNote);			
+			var slideHTML = Markdown.markdownToHtml(slideArr[0]);
+			var noteHTML = (slideArr.length>1) ? Markdown.markdownToHtml(slideArr[1]) : '';
 			var div = _doc.createDivElement();
 			div.id = "slide_" + i;
 			div.className = ('slidrr hidden');
-			div.innerHTML = slideHTML;
-			_doc.body.appendChild(div);
+			div.innerHTML = slideHTML + '<!-- \n' + noteHTML + '\n -->';
+			flexContainer.appendChild(div);
 		}
 		
 		slideId(0,true);
@@ -70,6 +87,7 @@ class Main {
 		buildProgress();
 		buildControle();
 		buildHelp();
+		buildLogo();
 	}
 	
 	
@@ -110,12 +128,39 @@ class Main {
 	{
 		var _container = _doc.createDivElement();
 		_container.className = "help";
-		
-		var _logo = _doc.createDivElement();
-		_logo.className = "logo";
-		
-		_container.appendChild(_logo);
+	 	
+		_container.innerHTML = Markdown.markdownToHtml(showDefaults());
+
 		_doc.body.appendChild(_container);
+	}
+	
+	public function buildLogo() : Void
+	{
+		var _container = _doc.createDivElement();
+		_container.className = "logo";
+		
+		_doc.body.appendChild(_container);
+	}
+	
+	public function showDefaults () : String {
+		var str = '
+		
+| action | shortcut |
+| --- | --- |
+| forward | `cursor right` , `.` , `space` |
+| reverse | `cursor left` , `,` | 
+| fullscreen | `f` | 
+| help | `h` | 
+| create black screen | `b` | 
+| reverse fullscreen | `esc` | 
+| speaker notes | `s` | 
+';
+			
+		str += 'markdown: ${markdown}';
+		str += 'slide split: ${spliteSlide}';
+		str += 'note split: ${splitNote}';
+		
+		return str;
 	}
 
 	// ____________________________________ move! ____________________________________
