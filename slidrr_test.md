@@ -4,7 +4,7 @@ This note demonstrates some of what [Markdown][1] is capable of doing.
 
 *Note: Feel free to play with this page. Unlike regular notes, this doesn't automatically save itself.*
 
----
+--
 
 ## Basic formatting
 
@@ -12,7 +12,7 @@ Paragraphs can be written like so. A paragraph is the basic block of Markdown. A
 
 Paragraphs must be separated by a blank line. Basic formatting of *italics* and **bold** is supported. This *can be **nested** like* so.
 
----
+--
 
 ## Lists
 
@@ -32,7 +32,7 @@ Paragraphs must be separated by a blank line. Basic formatting of *italics* and 
 * Yet another item
 * And there's more...
 
----
+--
 
 ## Paragraph modifiers
 
@@ -42,13 +42,13 @@ Paragraphs must be separated by a blank line. Basic formatting of *italics* and 
 
 You can also make `inline code` to add code into other things.
 
----
+--
 
 ### Quote
 
 > Here is a quote. What this is should be self explanatory. Quotes are automatically indented when they are used.
 
----
+--
 
 
 ## Headings
@@ -63,7 +63,7 @@ Of course, demonstrating what headings look like messes up the structure of the 
 
 I don't recommend using more than three or four levels of headings here, because, when you're smallest heading isn't too small, and you're largest heading isn't too big, and you want each size up to look noticeably larger and more important, there there are only so many sizes that you can use.
 
----
+--
 
 ## URLs
 
@@ -78,14 +78,14 @@ URLs can be made in a handful of ways:
 A horizontal rule is a line that goes across the middle of the page.
 It's sometimes handy for breaking things up.
 
----
+--
 
 
 ## Images
 
 Markdown can also contain images. I'll need to add something here sometime.
 
----
+--
 
 ## Finally
 
