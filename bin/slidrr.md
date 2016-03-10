@@ -9,7 +9,7 @@ done in plain css, js and html
 ### A textual example
 
 Content can be written in **Markdown!**  
-New lines no longer need two angle brackets.  
+Just follow the `rules` defined [here](#)
 
 This will be in a separate paragraph
 
@@ -28,8 +28,29 @@ No need for multiple templates!
 # Speaker notes
 
 > Slidrr quote that will blow you mind
-_Matthijs Kamstra aka [mck]_
+
+**Matthijs Kamstra aka [mck]**
 
 ??
 
-Something clever
+Notes that show **up**
+
+--
+
+### extra Markup
+
+- `--` for an extra slide
+- `??` for speaker notes
+
+--
+
+![](https://i.ytimg.com/vi/BpbJ0lHFLLw/maxresdefault.jpg)
+
+first image then text to create a fullscreen back ground image
+
+--
+
+
+# and the other way around
+
+![](https://i.ytimg.com/vi/BpbJ0lHFLLw/maxresdefault.jpg)

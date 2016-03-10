@@ -53,17 +53,23 @@ class Main {
 		});
 	}
 	
+	/**
+	* first function called after reading md file
+	
+	*/
 	private function build(md:String) : Void
 	{
+
+		
 		flexContainer = _doc.createDivElement();
 		flexContainer.className = 'container';
 		_doc.body.appendChild(flexContainer);
 
-		var slides : Array<String> = md.split(spliteSlide);
+		var slides : Array<String> = md.split('\n'+spliteSlide+'\n');
 		_total = slides.length;
 		for ( i in 0 ... _total ) {
 			// trace(slides[i]);
-			var slideArr = slides[i].split(splitNote);			
+			var slideArr = slides[i].split('\n'+splitNote+'\n');			
 			var slideHTML = Markdown.markdownToHtml(slideArr[0]);
 			var noteHTML = (slideArr.length>1) ? Markdown.markdownToHtml(slideArr[1]) : '';
 			var div = _doc.createDivElement();
@@ -72,8 +78,12 @@ class Main {
 			div.innerHTML = slideHTML + '<!-- \n' + noteHTML + '\n -->';
 			flexContainer.appendChild(div);
 		}
+
+		// [mck] wait for everything
+		readURL ();
 		
-		slideId(0,true);
+		// [mck] readURL should start the correct slide
+//		slideId(0,true);
 		
 		_win.onkeydown = function (e){
 			onKeyHandler(e);
@@ -88,6 +98,7 @@ class Main {
 		buildControle();
 		buildHelp();
 		buildLogo();
+		
 	}
 	
 	
@@ -159,8 +170,47 @@ class Main {
 		str += 'markdown: ${markdown}';
 		str += 'slide split: ${spliteSlide}';
 		str += 'note split: ${splitNote}';
+	
+		str += '\n';	
+		for ( i in 0 ... queryArr.length ) {
+			str += 'queryArr ${queryArr[i]}';
+		}
+		str += '\n';	
+		
+		
 		
 		return str;
+	}
+
+	// ____________________________________ hash ____________________________________
+
+	/**
+	 * Updates the page URL (hash) to reflect the current state.
+	 */
+	function writeURL (id:Int) : Void {
+		
+			
+		trace('writeURL ($id)');
+		
+		var url = '/' + Std.string(id);
+		_win.location.hash = url;
+	}
+	
+	/**
+	 * Reads the current URL (hash) and navigates accordingly.
+	 */
+	function readURL () : Void {
+
+		trace('readURL');
+
+
+		var hash = _win.location.hash;
+		var id = Std.parseInt ( hash.split('/')[1] );
+		if(id == null) id = 0;
+		trace('hash: ${hash}, id: ${id}');
+		_currentId = id;
+		
+		slideId(id,true);
 	}
 
 	// ____________________________________ move! ____________________________________
@@ -169,6 +219,8 @@ class Main {
 	{
 		var slide = _doc.getElementById("slide_" + id);
 		slide.className = (isVisible) ? "slidrr" : "slidrr hidden";
+		
+		writeURL (id);
 	}
 	
 	function move (dir:Int) : Void 
@@ -235,7 +287,71 @@ class Main {
 
 	function showSpeakerNotes () : Void {
 		trace('showSpeakerNotes');
+		// var notesPopup = _win.open( 'notes.html', 'Notes', 'width=1100,height=700' );
+		
+		var html  = '<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Slidrr Speakers Notes</title>
+
+<script>
+//respond to events
+window.addEventListener(\'message\',function(event) {
+	console.log(\'message received:  \' + event.data,event);
+	event.source.postMessage(\'holla back youngin!\',event.origin);
+},false);
+</script>
+
+	</head>
+	<body>
+		<div id="current-slide"></div>
+		<div id="upcoming-slide"><span class="label">UPCOMING:</span></div>
+		<div id="speaker-controls">
+			<div class="speaker-controls-time">
+				<h4 class="label">Time <span class="reset-button">Click to Reset</span></h4>
+				<div class="clock">
+					<span class="clock-value">0:00 AM</span>
+				</div>
+				<div class="timer">
+					<span class="hours-value">00</span><span class="minutes-value">:00</span><span class="seconds-value">:00</span>
+				</div>
+				<div class="clear"></div>
+			</div>
+			<div class="speaker-controls-notes hidden">
+				<h4 class="label">Notes</h4>
+				<div class="value"></div>
+			</div>
+		</div>
+	</body>
+</html>';
+		
+		
+		var notesPopup = _win.open('', 'Notes::','width=1100,height=700');
+		notesPopup.document.write(html);
+
+		var timer = new haxe.Timer(6000); // 1000ms delay
+		timer.run = function() { 
+			var message = 'Hello!  The time is: ' + (Date.now().getTime());
+			trace('blog.local:  sending message:  ' + message);
+			notesPopup.postMessage(message,'*'); //send the message and target URI
+		}
+		
+		//listen to holla back
+		_win.addEventListener('message',function(event) {
+			// if(event.origin !== 'http://scriptandstyle.com') return;
+			trace('received response: ' , event.data);
+		},false);
+		
+		// var timer = new haxe.Timer(6000); // 1000ms delay
+		// timer.run = function() { 
+		// 	var message = 'Hello!  The time is: ' + (Date.now().getTime());
+		// 	trace('blog.local:  sending message:  ' + message);
+		// 	notesPopup.postMessage(message,''); //send the message and target URI
+		// }
+	
 	}
+
 
 	// ____________________________________ handlers ____________________________________
 
@@ -301,7 +417,7 @@ class Main {
 		rawFile.send();
 	}
 	
-
+	// starting point Haxe
 	static public function main () {
 		var app = new Main ();
 	}

@@ -101,6 +101,7 @@ HxOverrides.iter = function(a) {
 	}};
 };
 var Main = function() {
+	this.queryArr = ["md","split","note","author","time"];
 	this.time = 45;
 	this.author = "";
 	this.markdown = "slidrr.md";
@@ -122,7 +123,7 @@ var Main = function() {
 			var temp = arr[i].split("=");
 			map.set(temp[0],temp[1]);
 		}
-		console.log((__map_reserved.author != null?map.existsReserved("author"):map.h.hasOwnProperty("author"))?__map_reserved.author != null?map.getReserved("author"):map.h["author"]:"niets");
+		haxe_Log.trace((__map_reserved.author != null?map.existsReserved("author"):map.h.hasOwnProperty("author"))?__map_reserved.author != null?map.getReserved("author"):map.h["author"]:"niets",{ fileName : "Main.hx", lineNumber : 44, className : "Main", methodName : "new"});
 		if(__map_reserved.md != null?map.existsReserved("md"):map.h.hasOwnProperty("md")) _g.markdown = __map_reserved.md != null?map.getReserved("md"):map.h["md"];
 		if(__map_reserved.split != null?map.existsReserved("split"):map.h.hasOwnProperty("split")) _g.spliteSlide = __map_reserved.split != null?map.getReserved("split"):map.h["split"];
 		if(__map_reserved.note != null?map.existsReserved("note"):map.h.hasOwnProperty("note")) _g.splitNote = __map_reserved.note != null?map.getReserved("note"):map.h["note"];
@@ -141,13 +142,13 @@ Main.prototype = {
 		this.flexContainer = this._doc.createElement("div");
 		this.flexContainer.className = "container";
 		this._doc.body.appendChild(this.flexContainer);
-		var slides = md.split(this.spliteSlide);
+		var slides = md.split("\n" + this.spliteSlide + "\n");
 		this._total = slides.length;
 		var _g1 = 0;
 		var _g2 = this._total;
 		while(_g1 < _g2) {
 			var i = _g1++;
-			var slideArr = slides[i].split(this.splitNote);
+			var slideArr = slides[i].split("\n" + this.splitNote + "\n");
 			var slideHTML = Markdown.markdownToHtml(slideArr[0]);
 			var noteHTML;
 			if(slideArr.length > 1) noteHTML = Markdown.markdownToHtml(slideArr[1]); else noteHTML = "";
@@ -157,7 +158,7 @@ Main.prototype = {
 			div.innerHTML = slideHTML + "<!-- \n" + noteHTML + "\n -->";
 			this.flexContainer.appendChild(div);
 		}
-		this.slideId(0,true);
+		this.readURL();
 		this._win.onkeydown = function(e) {
 			_g.onKeyHandler(e);
 		};
@@ -207,11 +208,35 @@ Main.prototype = {
 		str += "markdown: " + this.markdown;
 		str += "slide split: " + this.spliteSlide;
 		str += "note split: " + this.splitNote;
+		str += "\n";
+		var _g1 = 0;
+		var _g = this.queryArr.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			str += "queryArr " + this.queryArr[i];
+		}
+		str += "\n";
 		return str;
+	}
+	,writeURL: function(id) {
+		haxe_Log.trace("writeURL (" + id + ")",{ fileName : "Main.hx", lineNumber : 193, className : "Main", methodName : "writeURL"});
+		var url;
+		url = "/" + (id == null?"null":"" + id);
+		this._win.location.hash = url;
+	}
+	,readURL: function() {
+		haxe_Log.trace("readURL",{ fileName : "Main.hx", lineNumber : 204, className : "Main", methodName : "readURL"});
+		var hash = this._win.location.hash;
+		var id = Std.parseInt(hash.split("/")[1]);
+		if(id == null) id = 0;
+		haxe_Log.trace("hash: " + hash + ", id: " + id,{ fileName : "Main.hx", lineNumber : 210, className : "Main", methodName : "readURL"});
+		this._currentId = id;
+		this.slideId(id,true);
 	}
 	,slideId: function(id,isVisible) {
 		var slide = this._doc.getElementById("slide_" + id);
 		if(isVisible) slide.className = "slidrr"; else slide.className = "slidrr hidden";
+		this.writeURL(id);
 	}
 	,move: function(dir) {
 		this.slideId(this._prevId,false);
@@ -235,13 +260,25 @@ Main.prototype = {
 		}
 	}
 	,showHelp: function() {
-		console.log("showHelp");
+		haxe_Log.trace("showHelp",{ fileName : "Main.hx", lineNumber : 281, className : "Main", methodName : "showHelp"});
 	}
 	,showBlackScreen: function() {
-		console.log("showBlackScreen");
+		haxe_Log.trace("showBlackScreen",{ fileName : "Main.hx", lineNumber : 285, className : "Main", methodName : "showBlackScreen"});
 	}
 	,showSpeakerNotes: function() {
-		console.log("showSpeakerNotes");
+		haxe_Log.trace("showSpeakerNotes",{ fileName : "Main.hx", lineNumber : 289, className : "Main", methodName : "showSpeakerNotes"});
+		var html = "<!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\">\n\t\t<title>Slidrr Speakers Notes</title>\n\n<script>\n//respond to events\nwindow.addEventListener('message',function(event) {\n\tconsole.log('message received:  ' + event.data,event);\n\tevent.source.postMessage('holla back youngin!',event.origin);\n},false);\n</script>\n\n\t</head>\n\t<body>\n\t\t<div id=\"current-slide\"></div>\n\t\t<div id=\"upcoming-slide\"><span class=\"label\">UPCOMING:</span></div>\n\t\t<div id=\"speaker-controls\">\n\t\t\t<div class=\"speaker-controls-time\">\n\t\t\t\t<h4 class=\"label\">Time <span class=\"reset-button\">Click to Reset</span></h4>\n\t\t\t\t<div class=\"clock\">\n\t\t\t\t\t<span class=\"clock-value\">0:00 AM</span>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"timer\">\n\t\t\t\t\t<span class=\"hours-value\">00</span><span class=\"minutes-value\">:00</span><span class=\"seconds-value\">:00</span>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"clear\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"speaker-controls-notes hidden\">\n\t\t\t\t<h4 class=\"label\">Notes</h4>\n\t\t\t\t<div class=\"value\"></div>\n\t\t\t</div>\n\t\t</div>\n\t</body>\n</html>";
+		var notesPopup = this._win.open("","Notes::","width=1100,height=700");
+		notesPopup.document.write(html);
+		var timer = new haxe_Timer(6000);
+		timer.run = function() {
+			var message = "Hello!  The time is: " + new Date().getTime();
+			haxe_Log.trace("blog.local:  sending message:  " + message,{ fileName : "Main.hx", lineNumber : 336, className : "Main", methodName : "showSpeakerNotes"});
+			notesPopup.postMessage(message,"*");
+		};
+		this._win.addEventListener("message",function(event) {
+			haxe_Log.trace("received response: ",{ fileName : "Main.hx", lineNumber : 343, className : "Main", methodName : "showSpeakerNotes", customParams : [event.data]});
+		},false);
 	}
 	,onKeyHandler: function(e) {
 		var _g = e.keyCode;
@@ -278,10 +315,10 @@ Main.prototype = {
 	,onClickHandler: function(e) {
 		var temp = e.currentTarget;
 		if(temp.className.indexOf("left") != -1) {
-			console.log("left");
+			haxe_Log.trace("left",{ fileName : "Main.hx", lineNumber : 379, className : "Main", methodName : "onClickHandler"});
 			this.move(-1);
 		} else {
-			console.log("right");
+			haxe_Log.trace("right",{ fileName : "Main.hx", lineNumber : 382, className : "Main", methodName : "onClickHandler"});
 			this.move(1);
 		}
 	}
@@ -449,6 +486,23 @@ StringTools.replace = function(s,sub,by) {
 };
 var haxe_IMap = function() { };
 haxe_IMap.__name__ = true;
+var haxe_Log = function() { };
+haxe_Log.__name__ = true;
+haxe_Log.trace = function(v,infos) {
+	js_Boot.__trace(v,infos);
+};
+var haxe_Timer = function(time_ms) {
+	var me = this;
+	this.id = setInterval(function() {
+		me.run();
+	},time_ms);
+};
+haxe_Timer.__name__ = true;
+haxe_Timer.prototype = {
+	run: function() {
+	}
+	,__class__: haxe_Timer
+};
 var haxe_ds_StringMap = function() {
 	this.h = { };
 };
@@ -504,6 +558,25 @@ js__$Boot_HaxeError.prototype = $extend(Error.prototype,{
 });
 var js_Boot = function() { };
 js_Boot.__name__ = true;
+js_Boot.__unhtml = function(s) {
+	return s.split("&").join("&amp;").split("<").join("&lt;").split(">").join("&gt;");
+};
+js_Boot.__trace = function(v,i) {
+	var msg;
+	if(i != null) msg = i.fileName + ":" + i.lineNumber + ": "; else msg = "";
+	msg += js_Boot.__string_rec(v,"");
+	if(i != null && i.customParams != null) {
+		var _g = 0;
+		var _g1 = i.customParams;
+		while(_g < _g1.length) {
+			var v1 = _g1[_g];
+			++_g;
+			msg += "," + js_Boot.__string_rec(v1,"");
+		}
+	}
+	var d;
+	if(typeof(document) != "undefined" && (d = document.getElementById("haxe:trace")) != null) d.innerHTML += js_Boot.__unhtml(msg) + "<br/>"; else if(typeof console != "undefined" && console.log != null) console.log(msg);
+};
 js_Boot.getClass = function(o) {
 	if((o instanceof Array) && o.__enum__ == null) return Array; else {
 		var cl = o.__class__;
@@ -1532,6 +1605,8 @@ if(Array.prototype.indexOf) HxOverrides.indexOf = function(a,o,i) {
 String.prototype.__class__ = String;
 String.__name__ = true;
 Array.__name__ = true;
+Date.prototype.__class__ = Date;
+Date.__name__ = ["Date"];
 var Int = { __name__ : ["Int"]};
 var Dynamic = { __name__ : ["Dynamic"]};
 var Float = Number;
