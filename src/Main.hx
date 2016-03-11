@@ -62,7 +62,7 @@ class Main {
 	private function build(md:String) : Void
 	{
 		flexContainer = _doc.createDivElement();
-		flexContainer.className = 'container';
+		flexContainer.className = 'slidrr-container';
 		_doc.body.appendChild(flexContainer);
 
 		var slides : Array<String> = md.split('\n'+spliteSlide+'\n');
@@ -80,17 +80,14 @@ class Main {
 			div.innerHTML = slideHTML + '<!-- :: note :: \n' + noteHTML + '\n -->';
 			
 			if(stripArr[0] != ''){
-				div.className += ' fullscreen';
+				div.className += ' slidrr-fullscreen';
 				div.style.backgroundImage = 'url(${stripArr[0]})';
 			}
 			
 			flexContainer.appendChild(div);
 		}
 
-		onResizeHandler ();
-		
-		// [mck] readURL should start the correct slide
-		readURL ();
+
 		
 		// listen to keys	
 		_win.onkeydown = function (e){
@@ -109,6 +106,12 @@ class Main {
 		buildHelp();
 		buildLogo();
 		buildFocus();
+		
+		
+		onResizeHandler ();
+		
+		// [mck] readURL should start the correct slide
+		readURL ();
 	}
 	
 
@@ -218,13 +221,13 @@ class Main {
 | speaker notes | `s` | 
 ';
 			
-		str += 'markdown: ${markdown}';
-		str += 'slide split: ${spliteSlide}';
-		str += 'note split: ${splitNote}';
+		str += '\n- markdown: ${markdown}';
+		str += '\n- slide split: ${spliteSlide}';
+		str += '\n- note split: ${splitNote}';
 	
-		str += '\n';	
+		str += '\n---\n';	
 		for ( i in 0 ... queryArr.length ) {
-			str += 'queryArr ${queryArr[i]}';
+			str += '\n- queryArr ${queryArr[i]}';
 		}
 		str += '\n';	
 		
@@ -254,22 +257,11 @@ class Main {
 		var hash = _win.location.hash;
 		var id = Std.parseInt ( hash.split('/')[1] );
 		if(id == null) id = 0;
-		// trace('hash: ${hash}, id: ${id}');
-		_currentId = id;
 		slideId(id,true);
 	}
 
 	// ____________________________________ move! ____________________________________
-	
-	function slideId (id:Int, isVisible:Bool) : Void 
-	{
-		var slide = _doc.getElementById("slide_" + id);
-		var css = slide.className.replace('hidden','').rtrim().replace('  ',' ');
-		slide.className = (isVisible) ? css : (css + " hidden");
-		
-		writeURL (id);
-	}
-	
+
 	function move (dir:Int) : Void 
 	{
 		slideId(_prevId,false);
@@ -283,12 +275,28 @@ class Main {
 		if(_currentId <= 0) _currentId = 0;
 
 		slideId(_currentId,true);
-		_prevId = _currentId;
+	}
+	
+	
+	function slideId (id:Int, isVisible:Bool) : Void 
+	{
+		var slide = _doc.getElementById("slide_" + id);
+		var css = slide.className.replace('hidden','').rtrim().replace('  ',' ');
+		slide.className = (isVisible) ? css : (css + " hidden");
 		
-		// progress
+		_currentId = id;
+		_prevId = id;
+		
+		writeURL (id);
+		updateProgress ();
+	}
+
+
+	function updateProgress () : Void 
+	{
 		var percentage = (_currentId/(_total-1))*100;
 		var progress =_doc.getElementsByClassName("progress-bar")[0];		
-		progress.style.width = Std.string(percentage) + '%';		
+		progress.style.width = Std.string(percentage) + '%';	
 	}
 
 	// ____________________________________ toggle screens ____________________________________
@@ -325,6 +333,15 @@ class Main {
 
 	function toggleHelp () : Void {
 		trace('toggleHelp');
+		var help = _doc.getElementsByClassName('help')[0];
+		if(help.style.visibility == 'visible')
+		{
+			help.style.visibility = 'hidden';
+			help.style.opacity = '0';
+		} else {
+			help.style.visibility = 'visible';
+			help.style.opacity = '1';
+		}
 	}
 
 
