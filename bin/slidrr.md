@@ -90,8 +90,6 @@ Notes that show **up**
 
 ### extra Markup
 
-no aditional markup needed except:
-
 - `--` to create an slide
 - `??` to add speaker notes
 
@@ -111,4 +109,7 @@ tip: use hex value in the alt text to change the background color
 ![](http://themodernmage.com/wp-content/uploads/2013/08/Mecha_in_blue_by_LordHannu-660x350.jpg)
 
 --
+
+# have fun
+
 

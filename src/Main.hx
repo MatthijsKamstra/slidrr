@@ -87,8 +87,6 @@ class Main {
 			
 			flexContainer.appendChild(div);
 		}
-
-
 		
 		// listen to keys	
 		_win.onkeydown = function (e){
@@ -107,8 +105,7 @@ class Main {
 		buildHelp();
 		buildLogo();
 		buildFocus();
-		
-		
+				
 		onResizeHandler ();
 		
 		// [mck] readURL should start the correct slide
