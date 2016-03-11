@@ -9,7 +9,7 @@ done in plain css, js and html
 ### A textual example
 
 Content can be written in **Markdown!**  
-Just follow the `rules` defined [here](#)
+Just follow the `rules` defined [here](https://daringfireball.net/projects/markdown/)
 
 This will be in a separate paragraph
 
@@ -54,4 +54,4 @@ first image then text to create a fullscreen back ground image
 
 # and the other way around
 
-![](https://i.ytimg.com/vi/BpbJ0lHFLLw/maxresdefault.jpg)
+![](http://themodernmage.com/wp-content/uploads/2013/08/Mecha_in_blue_by_LordHannu-660x350.jpg)
