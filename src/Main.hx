@@ -33,6 +33,7 @@ class Main {
 	
 	public function new () 
 	{
+		// [mck] DOM is ready
 		_doc.addEventListener("DOMContentLoaded", function(event) 
 		{	
 			// ?md=slidrrtest.md&author=mck
@@ -43,8 +44,8 @@ class Main {
 				map.set(temp[0],temp[1]);
 			}
 			
-			trace((map.exists('author')) ? (map.get('author')) : 'niets');
-			// your code
+			// trace((map.exists('author')) ? (map.get('author')) : 'niets');
+
 			if(map.exists('md')) 		markdown = map.get('md');
 			if(map.exists('split')) 	spliteSlide = map.get('split');
 			if(map.exists('note')) 		splitNote = map.get('note');
@@ -57,7 +58,6 @@ class Main {
 	
 	/**
 	* first function called after reading md file
-	
 	*/
 	private function build(md:String) : Void
 	{
@@ -73,10 +73,11 @@ class Main {
 			var stripArr = stripBackground(slideArr[0]);
 			var slideHTML = Markdown.markdownToHtml(stripArr[1]);
 			var noteHTML = (slideArr.length>1) ? Markdown.markdownToHtml(slideArr[1]) : '';
+			
 			var div = _doc.createDivElement();
 			div.id = "slide_" + i;
 			div.className = ('slidrr hidden');
-			div.innerHTML = slideHTML + '<!-- \n' + noteHTML + '\n -->';
+			div.innerHTML = slideHTML + '<!-- :: note :: \n' + noteHTML + '\n -->';
 			
 			if(stripArr[0] != ''){
 				div.className += ' fullscreen';
@@ -88,61 +89,30 @@ class Main {
 
 		onResizeHandler ();
 		
-		// [mck] wait for everything
+		// [mck] readURL should start the correct slide
 		readURL ();
 		
-		// [mck] readURL should start the correct slide
-		// slideId(0,true);
-		
+		// listen to keys	
 		_win.onkeydown = function (e){
 			onKeyHandler(e);
 		}
 				
+		// listen to resize
 		// onResizeHandler ();
 		// _win.onresize = function (){
 		// 	onResizeHandler();
 		// }
 		
+		// building blocks		
 		buildProgress();
 		buildControle();
 		buildHelp();
 		buildLogo();
-		
+		buildFocus();
 	}
 	
-	/**
-	 * check if the first item is an image, then make it full screen
-	 * if the first item is not an image, this will do nothing and return ['','markdown']
-	 * 
-	 * @param		content of markdown file
-	 *
-	 * @return 		array ['background-image','markdown without background-image']
-	 */
-	function stripBackground (md:String) : Array<String> 
-	{
-		var imageUrl = '';
-		var markdown = '';
-		if (md.indexOf('![') != -1){
-			// [mck] there is an image in the md
-			var temp = md.substring(0, md.indexOf('!['));
-			if(temp.replace('\n','').replace('\t','').replace('\r','').replace(' ','').length == 0){
-				// trace('first thing is an image');
-				// [mck] now get image
-				var arr = md.split('\n');
-				for ( i in 0 ... arr.length ) {
-					if (arr[i].indexOf('![') != -1) 
-						imageUrl = arr[i].replace('![', '').replace(']','').replace(')','').replace('(','');
-					else 
-						markdown += arr[i] + '\n';
-				}
-			}
-		} else {
-			markdown = md;
-		}
-		return [imageUrl,markdown];
-	}
-	
-	public function buildProgress () : Void
+
+	function buildProgress () : Void
 	{
 		var _container = _doc.createDivElement();
 		_container.className = "progress";
@@ -154,7 +124,8 @@ class Main {
 		_doc.body.appendChild(_container);
 	}
 
-	public function buildControle () : Void
+
+	function buildControle () : Void
 	{
 		var _container = _doc.createDivElement();
 		_container.className = "controls";
@@ -175,25 +146,65 @@ class Main {
 		};
 	}
 	
-	public function buildHelp () : Void
+	
+	function buildHelp () : Void
 	{
 		var _container = _doc.createDivElement();
 		_container.className = "help";
-	 	
 		_container.innerHTML = Markdown.markdownToHtml(showDefaults());
-
 		_doc.body.appendChild(_container);
 	}
 	
-	public function buildLogo() : Void
+	
+	function buildFocus () : Void
+	{
+		var _container = _doc.createDivElement();
+		_container.className = "focus";
+		_doc.body.appendChild(_container);
+	}
+	
+	
+	function buildLogo() : Void
 	{
 		var _container = _doc.createDivElement();
 		_container.className = "logo";
-		
 		_doc.body.appendChild(_container);
 	}
 	
-	public function showDefaults () : String {
+	// ____________________________________ misc ____________________________________
+	
+	/**
+	 * check if the first item is an image, then make it full screen
+	 * if the first item is not an image, this will do nothing and return ['','markdown']
+	 * 
+	 * @param		content of markdown file
+	 *
+	 * @return 		array ['background-image','markdown without background-image']
+	 */
+	function stripBackground (md:String) : Array<String> 
+	{
+		var imageUrl = '';
+		var markdown = md;
+		if (md.indexOf('![') != -1){
+			// [mck] there is an image in the md
+			var temp = md.substring(0, md.indexOf('!['));
+			if(temp.replace('\n','').replace('\t','').replace('\r','').replace(' ','').length == 0){
+				markdown = '';
+				// [mck] get image and the rest of the markdown content
+				var arr = md.split('\n');
+				for ( i in 0 ... arr.length ) {
+					if (arr[i].indexOf('![') != -1) 
+						imageUrl = arr[i].replace('![', '').replace(']','').replace(')','').replace('(','');
+					else 
+						markdown += arr[i] + '\n';
+				}
+			}
+		}
+		return [imageUrl,markdown];
+	}
+	
+	
+	function showDefaults () : String {
 		var str = '
 		
 | action | shortcut |
@@ -280,7 +291,7 @@ class Main {
 		progress.style.width = Std.string(percentage) + '%';		
 	}
 
-
+	// ____________________________________ toggle screens ____________________________________
 
 	public function toggleFullscreen () : Void 
 	{	
@@ -312,14 +323,24 @@ class Main {
 	}
 
 
-
-	function showHelp () : Void {
-		trace('showHelp');
+	function toggleHelp () : Void {
+		trace('toggleHelp');
 	}
 
-	function showBlackScreen () : Void {
-		trace('showBlackScreen');
+
+	function toggleFocus () : Void 
+	{
+		var focus = _doc.getElementsByClassName('focus')[0];
+		if(focus.style.visibility == 'visible')
+		{
+			focus.style.visibility = 'hidden';
+			focus.style.opacity = '0';
+		} else {
+			focus.style.visibility = 'visible';
+			focus.style.opacity = '1';
+		}
 	}
+
 
 	function showSpeakerNotes () : Void {
 		trace('showSpeakerNotes');
@@ -401,15 +422,14 @@ window.addEventListener(\'message\',function(event) {
 			case 32 : move(1); // space
 			case 190 : move(1); // . >
 			case 70 : toggleFullscreen(); // f / fullscreen
-			case 72 : showHelp(); // h / help
-			case 66 : showBlackScreen(); // b / black
+			case 72 : toggleHelp(); // h / help
+			case 66 : toggleFocus(); // b / black
 			case 83 : showSpeakerNotes();  // s / speaker note
-			
-			
 		}
 	}
 	
-	function onClickHandler (e) : Void {
+	function onClickHandler (e) : Void 
+	{
 		var temp : DivElement = cast e.currentTarget;
 		if(temp.className.indexOf('left') != -1){
 			trace('left');
@@ -424,13 +444,6 @@ window.addEventListener(\'message\',function(event) {
 	{
 		_width = _win.innerWidth;
 		_height = _win.innerHeight; 
-		
-		// var divs = _doc.getElementsByClassName("slidrr");
-		// for ( i in 0 ... divs.length ) {
-		// 	var div : DivElement = cast divs[i];
-		// 	div.style.width = Std.string(_width) + 'px';
-		// 	div.style.height = Std.string(_height) + 'px';
-		// }
 	}
 	
 	// ____________________________________ read markdown file ____________________________________
@@ -453,7 +466,7 @@ window.addEventListener(\'message\',function(event) {
 		rawFile.send();
 	}
 	
-	// starting point Haxe
+	// ____________________________________ Haxe is awewome! ____________________________________
 	static public function main () {
 		var app = new Main ();
 	}
