@@ -44,6 +44,7 @@ Notes that show **up**
 
 --
 
+
 ![](https://i.ytimg.com/vi/BpbJ0lHFLLw/maxresdefault.jpg)
 
 first image then text to create a fullscreen back ground image
