@@ -181,24 +181,9 @@ a:hover {
   background: #068de9; }
 
 
-/**
+/*********************************************
  * slidrr
- */
-
-.slidrr {
-	font-size: 38px;
-	font-weight: normal;
-	text-align: center;
-	
-	margin: auto;
-	overflow: visible;
-	
-	-webkit-transition: 1s ease-out;
-    -moz-transition: 1s ease-out;
-    -o-transition: 1s ease-out;
-    transition: 1s ease-out;
-	
-}
+ *********************************************/
 
 .container 
 {
@@ -214,6 +199,21 @@ a:hover {
 	-webkit-box-align: center;
 
 	align-items: center;
+}
+
+.slidrr {
+	font-size: 38px;
+	font-weight: normal;
+	text-align: center;
+	
+	margin: auto;
+	overflow: visible;
+	
+	-webkit-transition: 1s ease-out;
+    -moz-transition: 1s ease-out;
+    -o-transition: 1s ease-out;
+    transition: 1s ease-out;
+	
 }
 
 -webkit-full-screen{width:100%;height:100%}
@@ -279,4 +279,14 @@ a:hover {
 
 .footer{
 
+}
+
+.fullscreen{
+	background: url('http://chantclaire.org/wp-content/uploads/2016/02/dc534786327218551b8580f82f79dee2.jpeg') no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	width: 100%;
+	height: 100%;
 }

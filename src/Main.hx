@@ -5,6 +5,8 @@ import js.Browser;
 import js.html.*;
 import js.html.XMLHttpRequest;
 
+using StringTools;
+
 class Main {
 	
 	private var _doc = js.Browser.document;
@@ -59,31 +61,38 @@ class Main {
 	*/
 	private function build(md:String) : Void
 	{
-
-		
 		flexContainer = _doc.createDivElement();
 		flexContainer.className = 'container';
 		_doc.body.appendChild(flexContainer);
 
 		var slides : Array<String> = md.split('\n'+spliteSlide+'\n');
 		_total = slides.length;
-		for ( i in 0 ... _total ) {
-			// trace(slides[i]);
-			var slideArr = slides[i].split('\n'+splitNote+'\n');			
-			var slideHTML = Markdown.markdownToHtml(slideArr[0]);
+		for ( i in 0 ... _total ) 
+		{
+			var slideArr = slides[i].split('\n'+splitNote+'\n');	
+			var stripArr = stripBackground(slideArr[0]);
+			var slideHTML = Markdown.markdownToHtml(stripArr[1]);
 			var noteHTML = (slideArr.length>1) ? Markdown.markdownToHtml(slideArr[1]) : '';
 			var div = _doc.createDivElement();
 			div.id = "slide_" + i;
 			div.className = ('slidrr hidden');
 			div.innerHTML = slideHTML + '<!-- \n' + noteHTML + '\n -->';
+			
+			if(stripArr[0] != ''){
+				div.className += ' fullscreen';
+				div.style.backgroundImage = 'url(${stripArr[0]})';
+			}
+			
 			flexContainer.appendChild(div);
 		}
 
+		onResizeHandler ();
+		
 		// [mck] wait for everything
 		readURL ();
 		
 		// [mck] readURL should start the correct slide
-//		slideId(0,true);
+		// slideId(0,true);
 		
 		_win.onkeydown = function (e){
 			onKeyHandler(e);
@@ -101,6 +110,37 @@ class Main {
 		
 	}
 	
+	/**
+	 * check if the first item is an image, then make it full screen
+	 * if the first item is not an image, this will do nothing and return ['','markdown']
+	 * 
+	 * @param		content of markdown file
+	 *
+	 * @return 		array ['background-image','markdown without background-image']
+	 */
+	function stripBackground (md:String) : Array<String> 
+	{
+		var imageUrl = '';
+		var markdown = '';
+		if (md.indexOf('![') != -1){
+			// [mck] there is an image in the md
+			var temp = md.substring(0, md.indexOf('!['));
+			if(temp.replace('\n','').replace('\t','').replace('\r','').replace(' ','').length == 0){
+				// trace('first thing is an image');
+				// [mck] now get image
+				var arr = md.split('\n');
+				for ( i in 0 ... arr.length ) {
+					if (arr[i].indexOf('![') != -1) 
+						imageUrl = arr[i].replace('![', '').replace(']','').replace(')','').replace('(','');
+					else 
+						markdown += arr[i] + '\n';
+				}
+			}
+		} else {
+			markdown = md;
+		}
+		return [imageUrl,markdown];
+	}
 	
 	public function buildProgress () : Void
 	{
@@ -187,11 +227,9 @@ class Main {
 	/**
 	 * Updates the page URL (hash) to reflect the current state.
 	 */
-	function writeURL (id:Int) : Void {
-		
-			
-		trace('writeURL ($id)');
-		
+	function writeURL (id:Int) : Void
+	{
+		// trace('writeURL ($id)');
 		var url = '/' + Std.string(id);
 		_win.location.hash = url;
 	}
@@ -199,17 +237,14 @@ class Main {
 	/**
 	 * Reads the current URL (hash) and navigates accordingly.
 	 */
-	function readURL () : Void {
-
-		trace('readURL');
-
-
+	function readURL () : Void 
+	{
+		// trace('readURL');
 		var hash = _win.location.hash;
 		var id = Std.parseInt ( hash.split('/')[1] );
 		if(id == null) id = 0;
-		trace('hash: ${hash}, id: ${id}');
+		// trace('hash: ${hash}, id: ${id}');
 		_currentId = id;
-		
 		slideId(id,true);
 	}
 
@@ -218,7 +253,8 @@ class Main {
 	function slideId (id:Int, isVisible:Bool) : Void 
 	{
 		var slide = _doc.getElementById("slide_" + id);
-		slide.className = (isVisible) ? "slidrr" : "slidrr hidden";
+		var css = slide.className.replace('hidden','').rtrim().replace('  ',' ');
+		slide.className = (isVisible) ? css : (css + " hidden");
 		
 		writeURL (id);
 	}
