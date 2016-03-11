@@ -148,18 +148,19 @@ Main.prototype = {
 		while(_g1 < _g2) {
 			var i = _g1++;
 			var slideArr = slides[i].split("\n" + this.splitNote + "\n");
-			var stripArr = this.stripBackground(slideArr[0]);
-			var slideHTML = Markdown.markdownToHtml(stripArr[1]);
+			var vo = this.stripBackground(slideArr[0]);
+			var slideHTML = Markdown.markdownToHtml(vo.markdown);
 			var noteHTML;
 			if(slideArr.length > 1) noteHTML = Markdown.markdownToHtml(slideArr[1]); else noteHTML = "";
 			var div = this._doc.createElement("div");
 			div.id = "slide_" + i;
 			div.className = "slidrr hidden";
 			div.innerHTML = slideHTML + "<!-- :: note :: \n" + noteHTML + "\n -->";
-			if(stripArr[0] != "") {
+			if(vo.url != "") {
 				div.className += " slidrr-fullscreen";
-				div.style.backgroundImage = "url(" + stripArr[0] + ")";
+				div.style.backgroundImage = "url(" + vo.url + ")";
 			}
+			if(vo.color != "") div.style.backgroundColor = "" + vo.color;
 			this.flexContainer.appendChild(div);
 		}
 		this._win.onkeydown = function(e) {
@@ -215,22 +216,33 @@ Main.prototype = {
 		this._doc.body.appendChild(_container);
 	}
 	,stripBackground: function(md) {
-		var imageUrl = "";
-		var markdown = md;
+		var _url = "";
+		var _color = "";
+		var _markdown = md;
 		if(md.indexOf("![") != -1) {
 			var temp = md.substring(0,md.indexOf("!["));
 			if(StringTools.replace(StringTools.replace(StringTools.replace(StringTools.replace(temp,"\n",""),"\t",""),"\r","")," ","").length == 0) {
-				markdown = "";
+				_markdown = "";
 				var arr = md.split("\n");
 				var _g1 = 0;
 				var _g = arr.length;
 				while(_g1 < _g) {
 					var i = _g1++;
-					if(arr[i].indexOf("![") != -1) imageUrl = StringTools.replace(StringTools.replace(StringTools.replace(StringTools.replace(arr[i],"![",""),"]",""),")",""),"(",""); else markdown += arr[i] + "\n";
+					if(arr[i].indexOf("![") != -1) {
+						_color = this.validColor(arr[i]);
+						_url = StringTools.replace(arr[i].split("](")[1],")","");
+					} else _markdown += arr[i] + "\n";
 				}
 			}
 		}
-		return [imageUrl,markdown];
+		var _vo = { url : _url, color : _color, markdown : _markdown};
+		return _vo;
+	}
+	,validColor: function(str) {
+		var _str = "";
+		var _temp = StringTools.rtrim(StringTools.ltrim(StringTools.replace(str.split("](")[0],"![","")));
+		if(_temp.indexOf("#") == 0) _str = _temp;
+		return _str;
 	}
 	,showDefaults: function() {
 		var str = "\n\t\t\n| action | shortcut |\n| --- | --- |\n| forward | `cursor right` , `.` , `space` |\n| reverse | `cursor left` , `,` | \n| fullscreen | `f` | \n| help | `h` | \n| create black screen | `b` | \n| reverse fullscreen | `esc` | \n| speaker notes | `s` | \n";
@@ -290,7 +302,7 @@ Main.prototype = {
 		}
 	}
 	,toggleHelp: function() {
-		haxe_Log.trace("toggleHelp",{ fileName : "Main.hx", lineNumber : 335, className : "Main", methodName : "toggleHelp"});
+		haxe_Log.trace("toggleHelp",{ fileName : "Main.hx", lineNumber : 360, className : "Main", methodName : "toggleHelp"});
 		var help = this._doc.getElementsByClassName("help")[0];
 		if(help.style.visibility == "visible") {
 			help.style.visibility = "hidden";
@@ -311,18 +323,18 @@ Main.prototype = {
 		}
 	}
 	,showSpeakerNotes: function() {
-		haxe_Log.trace("showSpeakerNotes",{ fileName : "Main.hx", lineNumber : 363, className : "Main", methodName : "showSpeakerNotes"});
+		haxe_Log.trace("showSpeakerNotes",{ fileName : "Main.hx", lineNumber : 388, className : "Main", methodName : "showSpeakerNotes"});
 		var html = "<!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\">\n\t\t<title>Slidrr Speakers Notes</title>\n\n<script>\n//respond to events\nwindow.addEventListener('message',function(event) {\n\tconsole.log('message received:  ' + event.data,event);\n\tevent.source.postMessage('holla back youngin!',event.origin);\n},false);\n</script>\n\n\t</head>\n\t<body>\n\t\t<div id=\"current-slide\"></div>\n\t\t<div id=\"upcoming-slide\"><span class=\"label\">UPCOMING:</span></div>\n\t\t<div id=\"speaker-controls\">\n\t\t\t<div class=\"speaker-controls-time\">\n\t\t\t\t<h4 class=\"label\">Time <span class=\"reset-button\">Click to Reset</span></h4>\n\t\t\t\t<div class=\"clock\">\n\t\t\t\t\t<span class=\"clock-value\">0:00 AM</span>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"timer\">\n\t\t\t\t\t<span class=\"hours-value\">00</span><span class=\"minutes-value\">:00</span><span class=\"seconds-value\">:00</span>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"clear\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"speaker-controls-notes hidden\">\n\t\t\t\t<h4 class=\"label\">Notes</h4>\n\t\t\t\t<div class=\"value\"></div>\n\t\t\t</div>\n\t\t</div>\n\t</body>\n</html>";
 		var notesPopup = this._win.open("","Notes::","width=1100,height=700");
 		notesPopup.document.write(html);
 		var timer = new haxe_Timer(6000);
 		timer.run = function() {
 			var message = "Hello!  The time is: " + new Date().getTime();
-			haxe_Log.trace("blog.local:  sending message:  " + message,{ fileName : "Main.hx", lineNumber : 410, className : "Main", methodName : "showSpeakerNotes"});
+			haxe_Log.trace("blog.local:  sending message:  " + message,{ fileName : "Main.hx", lineNumber : 435, className : "Main", methodName : "showSpeakerNotes"});
 			notesPopup.postMessage(message,"*");
 		};
 		this._win.addEventListener("message",function(event) {
-			haxe_Log.trace("received response: ",{ fileName : "Main.hx", lineNumber : 417, className : "Main", methodName : "showSpeakerNotes", customParams : [event.data]});
+			haxe_Log.trace("received response: ",{ fileName : "Main.hx", lineNumber : 442, className : "Main", methodName : "showSpeakerNotes", customParams : [event.data]});
 		},false);
 	}
 	,onKeyHandler: function(e) {
@@ -360,10 +372,10 @@ Main.prototype = {
 	,onClickHandler: function(e) {
 		var temp = e.currentTarget;
 		if(temp.className.indexOf("left") != -1) {
-			haxe_Log.trace("left",{ fileName : "Main.hx", lineNumber : 452, className : "Main", methodName : "onClickHandler"});
+			haxe_Log.trace("left",{ fileName : "Main.hx", lineNumber : 477, className : "Main", methodName : "onClickHandler"});
 			this.move(-1);
 		} else {
-			haxe_Log.trace("right",{ fileName : "Main.hx", lineNumber : 455, className : "Main", methodName : "onClickHandler"});
+			haxe_Log.trace("right",{ fileName : "Main.hx", lineNumber : 480, className : "Main", methodName : "onClickHandler"});
 			this.move(1);
 		}
 	}
