@@ -97,7 +97,7 @@ Notes that show **up**
 
 ![#112A06](https://i.ytimg.com/vi/BpbJ0lHFLLw/maxresdefault.jpg)
 
-for full screen image,   
+for full-screen image,   
 you start with an image and then write text (if needed)
 
 tip: use hex value in the alt text to change the background color

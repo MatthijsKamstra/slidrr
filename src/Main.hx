@@ -74,10 +74,16 @@ class Main {
 			var slideHTML = Markdown.markdownToHtml(vo.markdown);
 			var noteHTML = (slideArr.length>1) ? Markdown.markdownToHtml(slideArr[1]) : '';
 			
+			var container = _doc.createDivElement();
+			container.className = 'slidrr-flex';
+			
 			var div = _doc.createDivElement();
-			div.id = "slide_" + i;
+			div.id = "slidrr-" + i;
 			div.className = ('slidrr hidden');
-			div.innerHTML = slideHTML + '<!-- :: note :: \n' + noteHTML + '\n -->';
+			
+			var container = _doc.createDivElement();
+			container.className = 'slidrr-flex';
+			container.innerHTML = slideHTML + '<!-- :: note :: \n' + noteHTML + '\n -->';
 			
 			if(vo.url != ''){
 				div.className += ' slidrr-fullscreen';
@@ -85,6 +91,7 @@ class Main {
 			}
 			if(vo.color != '') div.style.backgroundColor = '${vo.color}';
 			
+			div.appendChild(container);
 			flexContainer.appendChild(div);
 		}
 		
@@ -302,7 +309,7 @@ class Main {
 	
 	function slideId (id:Int, isVisible:Bool) : Void 
 	{
-		var slide = _doc.getElementById("slide_" + id);
+		var slide = _doc.getElementById("slidrr-" + id);
 		var css = slide.className.replace('hidden','').rtrim().replace('  ',' ');
 		slide.className = (isVisible) ? css : (css + " hidden");
 		
