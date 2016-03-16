@@ -1,0 +1,299 @@
+/*
+ * reset
+ */
+*{ margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;}
+
+/*
+ * global style
+ */
+body,html{width:100%;height:100%;overflow:hidden}
+body{line-height:1;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:100%;color:#fff;background:#222}
+
+.dark{color:#000}
+
+/*********************************************
+ * HEADERS
+ *********************************************/
+h1,h2,h3,h4,h5,h6{margin:0 0 20px;font-family:"Source Sans Pro",'Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:600;line-height:1.2;letter-spacing:normal;text-transform:uppercase;text-shadow:none;word-wrap:break-word}
+h1{font-size:2.5em;text-shadow:none}
+h2{font-size:1.6em}
+h3{font-size:1.3em}
+h4{font-size:1em}
+
+/*********************************************
+ * OTHER
+ *********************************************/
+p{margin:20px 0;line-height:1.3}
+
+/* Ensure certain elements are never larger than the slide itself */
+iframe,img,video{max-width:95%;max-height:95%}
+
+b,strong{font-weight:700}
+
+em{font-style:italic}
+
+dl,ol,ul{display:inline-block;text-align:left;margin:0 0 0 1em;line-height:1.3}
+ol{list-style-type:decimal}
+ul{list-style-type:disc}
+ul ul{list-style-type:square}
+ul ul ul{list-style-type:circle}
+ol ol,ol ul,ul ol,ul ul{display:block;margin-left:40px}
+dt{font-weight:700}dd{margin-left:40px}
+
+q,
+blockquote {
+  quotes: none; }
+
+blockquote {
+  display: block;
+  position: relative;
+  width: 70%;
+  margin: 20px auto;
+  padding: 5px;
+  font-style: italic;
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.2); }
+
+blockquote p:first-child,
+blockquote p:last-child {
+  display: inline-block; }
+
+q{font-style:italic}
+
+/*
+https://perishablepress.com/perfect-pre-tags/
+*/
+code,pre{font-family:Consolas,"Andale Mono WT","Andale Mono","Lucida Console","Lucida Sans Typewriter","DejaVu Sans Mono","Bitstream Vera Sans Mono","Liberation Mono","Nimbus Mono L",Monaco,"Courier New",Courier,monospace}
+
+pre {
+  display: block;
+  position: relative;
+  /*width: 90%;*/
+  margin: 20px auto;
+  text-align: left;
+  font-size: 0.55em;
+  line-height: 1.2em;
+  word-wrap: break-word;
+  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.3); }
+
+code {
+  border: 1px solid gray;
+  /*background-color: silver;*/
+  border-radius: 5px;
+  padding: 5px 10px 0px 10px;
+  background-color: rgba(255, 255, 255, 0.05)
+  }
+
+pre code {
+  display: block;
+  padding: 5px;
+  overflow: auto;
+  max-height: 400px;
+  word-wrap: normal; }
+
+table {
+  margin: auto;
+  border-collapse: collapse;
+  border-spacing: 0; }
+
+table th {
+  font-weight: bold; }
+
+table th,
+table td {
+  text-align: left;
+  padding: 0.2em 0.5em 0.2em 0.5em;
+  border-bottom: 1px solid; }
+
+table th[align="center"],
+table td[align="center"] {
+  text-align: center; }
+
+table th[align="right"],
+table td[align="right"] {
+  text-align: right; }
+
+table tbody tr:last-child th,
+table tbody tr:last-child td {
+  border-bottom: none; }
+
+sup {
+  vertical-align: super; }
+
+sub {
+  vertical-align: sub; }
+
+small {
+  display: inline-block;
+  font-size: 0.6em;
+  line-height: 1.2em;
+  vertical-align: top; }
+
+small * {
+  vertical-align: top; }
+
+/*********************************************
+ * LINKS
+ *********************************************/
+a {
+  color: #42affa;
+  text-decoration: none;
+  -webkit-transition: color .15s ease;
+  -moz-transition: color .15s ease;
+  transition: color .15s ease; }
+
+a:hover {
+  color: #8dcffc;
+  text-shadow: none;
+  border: none; }
+
+.roll span:after {
+  color: #fff;
+  background: #068de9; }
+
+
+/*********************************************
+ * slidrr
+ *********************************************/
+
+.slidrr-container 
+{
+	width: 100%;
+	height: 100%;
+
+}
+
+.slidrr {
+	width: 100%;
+	height: 100%;
+	
+	font-size: 38px;
+	font-weight: normal;
+	text-align: center;
+	
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+
+	-ms-flex-align: center;
+	-webkit-align-items: center;
+	-webkit-box-align: center;
+	align-items: center;
+	
+	-webkit-transition: 1s ease-out;
+    -moz-transition: 1s ease-out;
+    -o-transition: 1s ease-out;
+    transition: 1s ease-out;
+	
+}
+
+.slidrr-flex{
+	margin: auto;
+	overflow: visible;
+}
+
+.slidrr-fullscreen {
+	background: url('http://chantclaire.org/wp-content/uploads/2016/02/dc534786327218551b8580f82f79dee2.jpeg') no-repeat center center fixed; 
+	-webkit-background-size: cover;
+	-moz-background-size: cover;
+	-o-background-size: cover;
+	background-size: cover;
+	width: 100%;
+	height: 100%;
+}
+
+
+-webkit-full-screen{width:100%;height:100%}
+
+/*
+ * controle
+ */
+.controls{position:absolute;bottom:20px;left:20px;z-index:2}
+.arrow{width:0;height:0;border:20px solid #42affa;float:left;margin-right:30px}
+.next,.prev{border-top-color:transparent;border-bottom-color:transparent}
+.prev{border-left-color:transparent;border-left-width:0;border-right-width:30px}
+.next{border-right-color:transparent;border-left-width:30px;border-right-width:0}
+
+/*
+ * progressbar
+ */
+.progress{position:fixed;top:0;left:0;right:0;height:3px;z-index:3;background:rgba(0,0,0,.2)}
+.progress-bar{width:0;height:3px;background:#42affa;-webkit-transition:width .8s cubic-bezier(.26,.86,.44,.985);-moz-transition:width .8s cubic-bezier(.26,.86,.44,.985);transition:width .8s cubic-bezier(.26,.86,.44,.985)}
+
+/*
+ * show hide
+ */
+
+.hidden {display:none}
+
+.slide-show {
+	-webkit-transition: translateX(0%);
+    -moz-transition: translateX(0%);
+    -o-transition: translateX(0%);
+	transform: translateX(0%);
+}
+
+.slide-hide {
+	-webkit-transition: translateX(-100%);
+    -moz-transition: translateX(-100%);
+    -o-transition: translateX(-100%);
+	transform: translateX(-100%);
+}
+
+
+.focus {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: black;
+    visibility: hidden;
+    opacity: 0;
+    z-index: 100;
+    -webkit-transition: all 1s ease;
+    transition: all 1s ease;
+}
+
+.help {
+    position: absolute;
+    top: 0;
+
+	color:black;
+
+	margin: auto;
+	width: 500px;
+	height: 100%;
+
+    background: white;
+    visibility: hidden;
+    opacity: 0;
+    z-index: 100;
+    -webkit-transition: all 1s ease;
+    transition: all 1s ease;
+}
+
+.logo{
+	width: 70px;
+	height: 70px;
+	position: absolute;
+	right: 10px;
+	top: 10px;
+	background-image: url('../img/slidrr.png');
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+}
+
+
+.footer{
+
+}
+
+
+
