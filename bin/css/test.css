@@ -1,0 +1,6 @@
+@import url(https://fonts.googleapis.com/css?family=Oswald:400,700,300);
+@import url(https://fonts.googleapis.com/css?family=Droid+Sans:400,700);
+
+body {background-color: #2980b9;font-family: 'Droid Sans', sans-serif;}
+
+h1, h2, h3, h4, h5, h5 {font-family: 'Oswald', sans-serif;}

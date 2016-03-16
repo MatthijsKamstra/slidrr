@@ -23,8 +23,8 @@ This will be in a separate paragraph, **bold** and _italic_
 
 ### A list of things
 
-* Item 1
-* Item B
+* [Change the css styling](?css=css/test.css#/2)
+* [Revert to default css](?#/2)
 * Item gamma
 
 No need for multiple templates!
@@ -138,7 +138,7 @@ Text with highest contrast (black)
 
 # have fun!
 
-Read more about this project at:
+Read more about this project at:  
 <https://github.com/MatthijsKamstra/slidrr>
 
 

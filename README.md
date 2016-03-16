@@ -32,10 +32,10 @@ To use standard Markdown for presentations, I need to add some extra "rules" to 
 They shouldn't be to difficult to learn but they will show up in a standard Markdown editor (like MacDown) because they are not part of Markdown.
 I concider the additions simple and not intrucive. 
 
-To add a slide: `--` (2 dashes) __but you can changes that into something that you find easier to use__    
-To add speaker notes: `??` (2 questionmarks) __but you can changes that into something that you find easier to use__  
+To add a slide: `--` (2 dashes) _but you can changes that into something that you find easier to use_  
+To add speaker notes: `??` (2 questionmarks) _but you can changes that into something that you find easier to use_  
 
-To create a fullscreen image: use the default way to create an image `![](path/to/image)` and it should be the first markdown you write after creating a slide
+To create a fullscreen image: use the default way to create an image `![](path/to/image)` and it should be the first markdown you write after creating a slide.  
 To create a slide with an different background color: it works the same as an fullscreen image, but you add the hex value to the alt text of the image and leave the image source empty `![#ff3333]()`
 
 **Summary**
@@ -52,30 +52,32 @@ fullscreen image
 --
 ![#ff3333]()
 background color is red
-
 ```
+
+You need help with the basics of Markdown, check out this [cheatsheet](markdown.md)
 
 
 ## Features in Slidrr
 
-1. Write your presentation with Markdown
+1. Write your presentation with [Markdown](#markdown)
 2. Split into chapters using `--` 
 3. Add speaker-notes with `??` 
 10. Keyboard [navigation](#navigation)
 11. Default changes via quarystrings `?md=haxe.md&css=foobar.css&author=Matthijs Kamstra aka [mck]&time=45`
 	- md
 	- author
-	- css
+	- [css](#custom-css)
 	- time (in minutes)
-13. Easy to use [fullscreen images](#fullscreen)
-14. Change background color of slide, change font color automaticly to black or white
+13. Easy to use [fullscreen images](#fullscreen-images)
+14. [Change background color of slide](#change-background-color), change font color automaticly to black or white
 
 
 ## Features that need more love (still working on them)
 
-- Default changes via quarystrings
+- ~~Default changes via quarystrings~~
 - ~~Change background color~~
 	- ~~change font color based upon background color~~
+	- ~~enhance contrast with glow~~
 - Speaker notes
 	- time
 	- layout
@@ -109,6 +111,7 @@ background color is red
 	- previous slide
 	- speaker notes
 
+
 ## Navigation
 
 Slidrr uses keyboard navigation
@@ -124,21 +127,36 @@ Slidrr uses keyboard navigation
 | speaker notes | `s` | 
 
 
-#Fullscreen
+# Custom css
 
-create fullscreen images 
+You can change the html and add a new css,
+you can modify the existing `slidrr.css`
+or you can test by adding the path to the css to the url
+like `?css=test.css`
+
+```
+http://localhost:2000/?css=css/test.css#/13
+```
+
+
+# Fullscreen images
+
+Create a slide with fullscreen images 
 ```
 ![](path/to/image)
 fullscreen image
 ```
+_first the image then text_
+
 
 # Change background color
 
+Create a slide with a different colored background 
 ```
 ![#ff3333]()
 background color is red
 ```
-
+_use the image Markdown, but don't add an image-path_
 
 
 # Hightlight code

@@ -53,6 +53,8 @@ class Main {
 			if(map.exists('author'))	author = map.get('author');
 			if(map.exists('time')) 		time = Std.parseInt (map.get('time'));
 			if(map.exists('css')) 		css = map.get('css');
+
+			if(css != '') addCSS (css);
 			
     		readTextFile(markdown);
 		});
@@ -88,10 +90,11 @@ class Main {
 			container.innerHTML = slideHTML + '<!-- :: note :: \n' + noteHTML + '\n -->';
 			
 			if(vo.url != ''){
-				div.className += ' slidrr-fullscreen';
+				div.className += ' slidrr-fullscreen glow';
 				div.style.backgroundImage = 'url(${vo.url})';
 			}
 			if(vo.color != '') {
+				if(vo.url == '') div.className += ' glow';
 				div.style.backgroundColor = '${vo.color}';
 				var hex = Std.parseInt (vo.color.replace("#","0x"));
 				// [mck] check if background color is half white/black and change the color of the text 
@@ -196,6 +199,20 @@ class Main {
 	
 	// ____________________________________ misc ____________________________________
 	
+	/**
+	 * add css from query string to <head>
+	 * 
+	 * @param css path to css: css/test.css
+	 */
+	function addCSS(css:String):Void 
+	{
+		var head = _doc.getElementsByTagName('head')[0];
+    	var s = _doc.createElement('link');
+	    s.setAttribute('rel', 'stylesheet');
+	    s.setAttribute('href', '${css}');
+	    head.appendChild(s);
+	}
+
 	/**
 	 * check if the first item is an image, then make it full screen
 	 * if the first item is not an image, this will do nothing and return ['','markdown']
