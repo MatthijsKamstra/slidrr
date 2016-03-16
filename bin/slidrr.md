@@ -35,8 +35,16 @@ No need for multiple templates!
 
 --
 
+### extra Markup
+
+- `--` to create an slide
+- `??` to add speaker notes
+
+--
+
 ## code blocks
 
+`AaGgTtIiJj123!`  
 inline `code` or code-block:
 
 ```
@@ -88,28 +96,49 @@ Notes that show **up**
 
 --
 
-### extra Markup
-
-- `--` to create an slide
-- `??` to add speaker notes
-
---
-
 ![#112A06](https://i.ytimg.com/vi/BpbJ0lHFLLw/maxresdefault.jpg)
 
-for full-screen image,   
-you start with an image and then write text (if needed)
+# full-screen image
 
-tip: use hex value in the alt text to change the background color
+Start your slide with an image and then write text (if needed)
+
+__tip: use hex value in the alt text to change the background color__
 
 --
 
-# and the other way around
+# And the default way to show an image
 
 ![](http://themodernmage.com/wp-content/uploads/2013/08/Mecha_in_blue_by_LordHannu-660x350.jpg)
 
 --
 
-# have fun
+
+![#2c3e50]()
+
+#Background color dark
+
+Change the background color `#2c3e50`   
+without an image
+Text with highest contrast (white)
+
+--
+
+![#bdc3c7]()
+
+#Background color light
+
+Change the background color `#bdc3c7`  
+without an image
+Text with highest contrast (black)
+
+
+--
+
+
+
+# have fun!
+
+Read more about this project at:
+<https://github.com/MatthijsKamstra/slidrr>
 
 

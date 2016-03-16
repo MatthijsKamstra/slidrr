@@ -25,6 +25,7 @@ class Main {
 	private var splitNote 		: String = '??';
 	private var markdown 		: String = 'slidrr.md'; 
 	private var author 			: String = ''; 
+	private var css 			: String = '';
 	private var time 			: Int = 45; // min
 
 	private var queryArr : Array<String> = ['md', 'split', 'note', 'author', 'time'];
@@ -51,6 +52,7 @@ class Main {
 			if(map.exists('note')) 		splitNote = map.get('note');
 			if(map.exists('author'))	author = map.get('author');
 			if(map.exists('time')) 		time = Std.parseInt (map.get('time'));
+			if(map.exists('css')) 		css = map.get('css');
 			
     		readTextFile(markdown);
 		});
@@ -89,7 +91,12 @@ class Main {
 				div.className += ' slidrr-fullscreen';
 				div.style.backgroundImage = 'url(${vo.url})';
 			}
-			if(vo.color != '') div.style.backgroundColor = '${vo.color}';
+			if(vo.color != '') {
+				div.style.backgroundColor = '${vo.color}';
+				var hex = Std.parseInt (vo.color.replace("#","0x"));
+				// [mck] check if background color is half white/black and change the color of the text 
+				if(hex > (0xffffff/2)) div.className += ' dark';		
+			}
 			
 			div.appendChild(container);
 			flexContainer.appendChild(div);
@@ -117,6 +124,14 @@ class Main {
 		
 		// [mck] readURL should start the correct slide
 		readURL ();
+		
+		// [mck] start highlight plugin?
+		untyped hljs.initHighlightingOnLoad();
+		
+		
+		
+		// trace('#ffffff (white): ${0xffffff}' ); // 16777215
+		// trace('#000000 (black): ${0x000000}' ); // 0
 	}
 	
 
@@ -513,6 +528,7 @@ window.addEventListener(\'message\',function(event) {
 	}
 	
 	// ____________________________________ Haxe is awewome! ____________________________________
+
 	static public function main () {
 		var app = new Main ();
 	}
