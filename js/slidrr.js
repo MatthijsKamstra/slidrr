@@ -130,6 +130,7 @@ var Main = function() {
 		if(__map_reserved.author != null?map.existsReserved("author"):map.h.hasOwnProperty("author")) _g.author = __map_reserved.author != null?map.getReserved("author"):map.h["author"];
 		if(__map_reserved.time != null?map.existsReserved("time"):map.h.hasOwnProperty("time")) _g.time = Std.parseInt(__map_reserved.time != null?map.getReserved("time"):map.h["time"]);
 		if(__map_reserved.css != null?map.existsReserved("css"):map.h.hasOwnProperty("css")) _g.css = __map_reserved.css != null?map.getReserved("css"):map.h["css"];
+		if(_g.css != "") _g.addCSS(_g.css);
 		_g.readTextFile(_g.markdown);
 	});
 };
@@ -163,10 +164,11 @@ Main.prototype = {
 			container1.className = "slidrr-flex";
 			container1.innerHTML = slideHTML + "<!-- :: note :: \n" + noteHTML + "\n -->";
 			if(vo.url != "") {
-				div.className += " slidrr-fullscreen";
+				div.className += " slidrr-fullscreen glow";
 				div.style.backgroundImage = "url(" + vo.url + ")";
 			}
 			if(vo.color != "") {
+				if(vo.url == "") div.className += " glow";
 				div.style.backgroundColor = "" + vo.color;
 				var hex = Std.parseInt(StringTools.replace(vo.color,"#","0x"));
 				if(hex > 8388607.5) div.className += " dark";
@@ -226,6 +228,13 @@ Main.prototype = {
 		var _container = this._doc.createElement("div");
 		_container.className = "logo";
 		this._doc.body.appendChild(_container);
+	}
+	,addCSS: function(css) {
+		var head = this._doc.getElementsByTagName("head")[0];
+		var s = this._doc.createElement("link");
+		s.setAttribute("rel","stylesheet");
+		s.setAttribute("href","" + css);
+		head.appendChild(s);
 	}
 	,stripBackground: function(md) {
 		var _url = "";
@@ -314,7 +323,7 @@ Main.prototype = {
 		}
 	}
 	,toggleHelp: function() {
-		haxe_Log.trace("toggleHelp",{ fileName : "Main.hx", lineNumber : 379, className : "Main", methodName : "toggleHelp"});
+		haxe_Log.trace("toggleHelp",{ fileName : "Main.hx", lineNumber : 396, className : "Main", methodName : "toggleHelp"});
 		var help = this._doc.getElementsByClassName("help")[0];
 		if(help.style.visibility == "visible") {
 			help.style.visibility = "hidden";
@@ -335,18 +344,18 @@ Main.prototype = {
 		}
 	}
 	,showSpeakerNotes: function() {
-		haxe_Log.trace("showSpeakerNotes",{ fileName : "Main.hx", lineNumber : 407, className : "Main", methodName : "showSpeakerNotes"});
+		haxe_Log.trace("showSpeakerNotes",{ fileName : "Main.hx", lineNumber : 424, className : "Main", methodName : "showSpeakerNotes"});
 		var html = "<!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\">\n\t\t<title>Slidrr Speakers Notes</title>\n\n<script>\n//respond to events\nwindow.addEventListener('message',function(event) {\n\tconsole.log('message received:  ' + event.data,event);\n\tevent.source.postMessage('holla back youngin!',event.origin);\n},false);\n</script>\n\n\t</head>\n\t<body>\n\t\t<div id=\"current-slide\"></div>\n\t\t<div id=\"upcoming-slide\"><span class=\"label\">UPCOMING:</span></div>\n\t\t<div id=\"speaker-controls\">\n\t\t\t<div class=\"speaker-controls-time\">\n\t\t\t\t<h4 class=\"label\">Time <span class=\"reset-button\">Click to Reset</span></h4>\n\t\t\t\t<div class=\"clock\">\n\t\t\t\t\t<span class=\"clock-value\">0:00 AM</span>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"timer\">\n\t\t\t\t\t<span class=\"hours-value\">00</span><span class=\"minutes-value\">:00</span><span class=\"seconds-value\">:00</span>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"clear\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"speaker-controls-notes hidden\">\n\t\t\t\t<h4 class=\"label\">Notes</h4>\n\t\t\t\t<div class=\"value\"></div>\n\t\t\t</div>\n\t\t</div>\n\t</body>\n</html>";
 		var notesPopup = this._win.open("","Notes::","width=1100,height=700");
 		notesPopup.document.write(html);
 		var timer = new haxe_Timer(6000);
 		timer.run = function() {
 			var message = "Hello!  The time is: " + new Date().getTime();
-			haxe_Log.trace("blog.local:  sending message:  " + message,{ fileName : "Main.hx", lineNumber : 454, className : "Main", methodName : "showSpeakerNotes"});
+			haxe_Log.trace("blog.local:  sending message:  " + message,{ fileName : "Main.hx", lineNumber : 471, className : "Main", methodName : "showSpeakerNotes"});
 			notesPopup.postMessage(message,"*");
 		};
 		this._win.addEventListener("message",function(event) {
-			haxe_Log.trace("received response: ",{ fileName : "Main.hx", lineNumber : 461, className : "Main", methodName : "showSpeakerNotes", customParams : [event.data]});
+			haxe_Log.trace("received response: ",{ fileName : "Main.hx", lineNumber : 478, className : "Main", methodName : "showSpeakerNotes", customParams : [event.data]});
 		},false);
 	}
 	,onKeyHandler: function(e) {
@@ -384,10 +393,10 @@ Main.prototype = {
 	,onClickHandler: function(e) {
 		var temp = e.currentTarget;
 		if(temp.className.indexOf("left") != -1) {
-			haxe_Log.trace("left",{ fileName : "Main.hx", lineNumber : 496, className : "Main", methodName : "onClickHandler"});
+			haxe_Log.trace("left",{ fileName : "Main.hx", lineNumber : 513, className : "Main", methodName : "onClickHandler"});
 			this.move(-1);
 		} else {
-			haxe_Log.trace("right",{ fileName : "Main.hx", lineNumber : 499, className : "Main", methodName : "onClickHandler"});
+			haxe_Log.trace("right",{ fileName : "Main.hx", lineNumber : 516, className : "Main", methodName : "onClickHandler"});
 			this.move(1);
 		}
 	}
