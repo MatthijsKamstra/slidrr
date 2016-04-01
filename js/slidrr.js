@@ -102,12 +102,14 @@ HxOverrides.iter = function(a) {
 };
 var Main = function() {
 	this.queryArr = ["md","split","note","author","time"];
-	this.time = 45;
+	this.timer = new haxe_Timer(1000);
+	this.time = 10;
 	this.css = "";
 	this.author = "";
 	this.markdown = "slidrr.md";
 	this.splitNote = "??";
 	this.spliteSlide = "--";
+	this.isSpeakrrNotes = false;
 	this.isFullScreen = false;
 	this._prevId = 0;
 	this._currentId = 0;
@@ -115,38 +117,106 @@ var Main = function() {
 	this._doc = window.document;
 	var _g = this;
 	this._doc.addEventListener("DOMContentLoaded",function(event) {
-		var map = new haxe_ds_StringMap();
-		var arr = HxOverrides.substr(_g._win.location.search,1,null).split("&");
-		var _g2 = 0;
-		var _g1 = arr.length;
-		while(_g2 < _g1) {
-			var i = _g2++;
-			var temp = arr[i].split("=");
-			map.set(temp[0],temp[1]);
-		}
-		if(__map_reserved.md != null?map.existsReserved("md"):map.h.hasOwnProperty("md")) _g.markdown = __map_reserved.md != null?map.getReserved("md"):map.h["md"];
-		if(__map_reserved.split != null?map.existsReserved("split"):map.h.hasOwnProperty("split")) _g.spliteSlide = __map_reserved.split != null?map.getReserved("split"):map.h["split"];
-		if(__map_reserved.note != null?map.existsReserved("note"):map.h.hasOwnProperty("note")) _g.splitNote = __map_reserved.note != null?map.getReserved("note"):map.h["note"];
-		if(__map_reserved.author != null?map.existsReserved("author"):map.h.hasOwnProperty("author")) _g.author = __map_reserved.author != null?map.getReserved("author"):map.h["author"];
-		if(__map_reserved.time != null?map.existsReserved("time"):map.h.hasOwnProperty("time")) _g.time = Std.parseInt(__map_reserved.time != null?map.getReserved("time"):map.h["time"]);
-		if(__map_reserved.css != null?map.existsReserved("css"):map.h.hasOwnProperty("css")) _g.css = __map_reserved.css != null?map.getReserved("css"):map.h["css"];
-		if(_g.css != "") _g.addCSS(_g.css);
-		_g.readTextFile(_g.markdown);
+		_g.init();
 	});
+	if(this._doc.getElementById("slidrr-speakrr-notes") != null) {
+		this.isSpeakrrNotes = true;
+		this.init();
+	}
 };
 Main.__name__ = true;
 Main.main = function() {
 	var app = new Main();
 };
 Main.prototype = {
-	build: function(md) {
+	init: function() {
+		var map = new haxe_ds_StringMap();
+		var arr = HxOverrides.substr(this._win.location.search,1,null).split("&");
+		var _g1 = 0;
+		var _g = arr.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			var temp = arr[i].split("=");
+			map.set(temp[0],temp[1]);
+		}
+		if(__map_reserved.md != null?map.existsReserved("md"):map.h.hasOwnProperty("md")) this.markdown = __map_reserved.md != null?map.getReserved("md"):map.h["md"];
+		if(__map_reserved.split != null?map.existsReserved("split"):map.h.hasOwnProperty("split")) this.spliteSlide = __map_reserved.split != null?map.getReserved("split"):map.h["split"];
+		if(__map_reserved.note != null?map.existsReserved("note"):map.h.hasOwnProperty("note")) this.splitNote = __map_reserved.note != null?map.getReserved("note"):map.h["note"];
+		if(__map_reserved.author != null?map.existsReserved("author"):map.h.hasOwnProperty("author")) this.author = __map_reserved.author != null?map.getReserved("author"):map.h["author"];
+		if(__map_reserved.time != null?map.existsReserved("time"):map.h.hasOwnProperty("time")) this.time = Std.parseInt(__map_reserved.time != null?map.getReserved("time"):map.h["time"]);
+		if(__map_reserved.css != null?map.existsReserved("css"):map.h.hasOwnProperty("css")) this.css = __map_reserved.css != null?map.getReserved("css"):map.h["css"];
+		if(this.css != "") this.addCSS(this.css);
+		this.readTextFile(this.markdown);
+	}
+	,buildNotes: function(md) {
+		var _g = this;
+		window.console.info("notes");
+		var slideCurrent = this._doc.getElementById("current-slide");
+		var slideNext = this._doc.getElementById("upcoming-slide");
+		this.buildOneSlide(md,5,slideCurrent);
+		this.buildOneSlide(md,4,slideNext);
+		hljs.initHighlightingOnLoad();
+		this.startTime = new Date();
+		this.timer.run = function() {
+			_g.setClock();
+		};
+	}
+	,buildOneSlide: function(md,slideId,el) {
+		this.flexContainer = this._doc.createElement("div");
+		this.flexContainer.className = "slidrr-container";
+		var slides = md.split("\n" + this.spliteSlide + "\n");
+		this._total = slides.length;
+		var i = slideId;
+		var slideArr = slides[i].split("\n" + this.splitNote + "\n");
+		var vo = this.stripBackground(slideArr[0]);
+		var slideHTML = Markdown.markdownToHtml(vo.markdown);
+		var noteHTML;
+		if(slideArr.length > 1) noteHTML = Markdown.markdownToHtml(slideArr[1]); else noteHTML = "";
+		var container = this._doc.createElement("div");
+		container.className = "slidrr-flex";
+		var div = this._doc.createElement("div");
+		div.id = "slidrr-" + i;
+		div.className = "slidrr";
+		var container1 = this._doc.createElement("div");
+		container1.className = "slidrr-flex";
+		container1.innerHTML = slideHTML + "<!-- :: note :: \n" + noteHTML + "\n -->";
+		if(vo.url != "") {
+			div.className += " slidrr-fullscreen glow";
+			div.style.backgroundImage = "url(" + vo.url + ")";
+		}
+		if(vo.color != "") {
+			if(vo.url == "") div.className += " glow";
+			div.style.backgroundColor = "" + vo.color;
+			var hex = Std.parseInt(StringTools.replace(vo.color,"#","0x"));
+			if(hex > 8388607.5) div.className += " dark";
+		}
+		div.appendChild(container1);
+		this.flexContainer.appendChild(div);
+		var div2 = this._doc.createElement("div");
+		div2.id = "slidrr-mini-" + i;
+		div2.className = "mini-slide";
+		div2.innerHTML = slideHTML + "<!-- :: note :: \n" + noteHTML + "\n -->";
+		var notzz = this._doc.getElementsByClassName("speaker-controls-notes")[0];
+		if(notzz != null && noteHTML != "") notzz.innerHTML = noteHTML;
+		el.appendChild(this.flexContainer);
+	}
+	,setClock: function() {
+		var timer = this._doc.getElementsByClassName("timer")[0];
+		var clock = this._doc.getElementsByClassName("clock")[0];
+		var countdown = this._doc.getElementsByClassName("countdown")[0];
+		var now = new Date();
+		var progress = Std["int"](now.getTime() - this.startTime.getTime());
+		timer.innerHTML = "" + utils_TimeUtil.readableTime(progress);
+		clock.innerHTML = "" + StringTools.lpad(Std.string(now.getHours()),"0",2) + ":" + StringTools.lpad(Std.string(now.getMinutes()),"0",2) + ":" + StringTools.lpad(Std.string(now.getSeconds() + 1),"0",2);
+		countdown.innerHTML = "" + utils_TimeUtil.countdown(this.time,progress);
+	}
+	,build: function(md) {
 		var _g = this;
 		this.flexContainer = this._doc.createElement("div");
 		this.flexContainer.className = "slidrr-container";
 		this._doc.body.appendChild(this.flexContainer);
 		this.buildNav();
 		var _nav = this._doc.getElementsByClassName("nav")[0];
-		haxe_Log.trace(_nav,{ fileName : "Main.hx", lineNumber : 76, className : "Main", methodName : "build"});
 		var slides = md.split("\n" + this.spliteSlide + "\n");
 		this._total = slides.length;
 		var _g1 = 0;
@@ -337,7 +407,7 @@ Main.prototype = {
 		}
 	}
 	,toggleHelp: function() {
-		haxe_Log.trace("toggleHelp",{ fileName : "Main.hx", lineNumber : 421, className : "Main", methodName : "toggleHelp"});
+		haxe_Log.trace("toggleHelp",{ fileName : "Main.hx", lineNumber : 525, className : "Main", methodName : "toggleHelp"});
 		var help = this._doc.getElementsByClassName("help")[0];
 		if(help.style.visibility == "visible") {
 			help.style.visibility = "hidden";
@@ -368,18 +438,12 @@ Main.prototype = {
 		}
 	}
 	,showSpeakerNotes: function() {
-		haxe_Log.trace("showSpeakerNotes",{ fileName : "Main.hx", lineNumber : 462, className : "Main", methodName : "showSpeakerNotes"});
-		var html = "<!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\">\n\t\t<title>Slidrr Speakers Notes</title>\n\n<script>\n//respond to events\nwindow.addEventListener('message',function(event) {\n\tconsole.log('message received:  ' + event.data,event);\n\tevent.source.postMessage('holla back youngin!',event.origin);\n},false);\n</script>\n\n\t</head>\n\t<body>\n\t\t<div id=\"current-slide\"></div>\n\t\t<div id=\"upcoming-slide\"><span class=\"label\">UPCOMING:</span></div>\n\t\t<div id=\"speaker-controls\">\n\t\t\t<div class=\"speaker-controls-time\">\n\t\t\t\t<h4 class=\"label\">Time <span class=\"reset-button\">Click to Reset</span></h4>\n\t\t\t\t<div class=\"clock\">\n\t\t\t\t\t<span class=\"clock-value\">0:00 AM</span>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"timer\">\n\t\t\t\t\t<span class=\"hours-value\">00</span><span class=\"minutes-value\">:00</span><span class=\"seconds-value\">:00</span>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"clear\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"speaker-controls-notes hidden\">\n\t\t\t\t<h4 class=\"label\">Notes</h4>\n\t\t\t\t<div class=\"value\"></div>\n\t\t\t</div>\n\t\t</div>\n\t</body>\n</html>";
+		haxe_Log.trace("showSpeakerNotes",{ fileName : "Main.hx", lineNumber : 566, className : "Main", methodName : "showSpeakerNotes"});
+		var html = "\n<!DOCTYPE html>\n<html lang=\"en\" id=\"slidrr-speakrr-notes\">\n  <head>\n    <meta charset=\"utf-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->\n\t\n    <meta name=\"description\" content=\"\">\n    <meta name=\"author\" content=\"\">\n    <link rel=\"icon\" href=\"favicon.ico\">\n\t\n\t<meta name=\"google\" value=\"notranslate\">\n\t\n\t<title>Slidrr :: speakrr-notes</title>\n\t\n\t<!-- Latest compiled and minified CSS -->\n\t<!--<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css\" integrity=\"sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7\" crossorigin=\"anonymous\">-->\n\t\n\t<!-- custom css -->\n\t<link rel=\"stylesheet\" href=\"css/slidrr.css\" >\n\t<link rel=\"stylesheet\" href=\"css/monokai-sublime-min.css\" >\n\n<script>\n//respond to events\nwindow.addEventListener('message',function(event) {\n\tconsole.log('message received:  ' + event.data,event);\n\tevent.source.postMessage('holla back youngin!',event.origin);\n},false);\n</script>\n\n</head>\n<body>\n\t\n\t<div id=\"current-slide\"></div>\n\t<div id=\"upcoming-slide\"></div>\n\t<div id=\"speaker-controls\">\n\t\t<div class=\"speaker-controls-time\">\n\t\t\t<h4 class=\"label\">Time <span class=\"reset-button\">Click to Reset</span></h4>\n\t\t\t<div class=\"clock\"></div>\n\t\t\t<div class=\"timer\"></div>\n\t\t\t<div class=\"countdown\"></div>\n\t\t</div>\n\t\t<div class=\"speaker-controls-notes\">\n\t\t\t<h4 class=\"label\">Notes</h4>\n\t\t\t<div class=\"value\"></div>\n\t\t</div>\n\t</div>\n\t\t\n\t\t\n\t<!-- Code generated using Haxe -->\n\t<script type=\"text/javascript\" src=\"js/highlight.pack.js\"></script>\n\t<script type=\"text/javascript\" src=\"js/slidrr.js\"></script>\n</body>\n</html>\n";
 		var notesPopup = this._win.open("","Notes::","width=1100,height=700");
 		notesPopup.document.write(html);
-		var timer = new haxe_Timer(6000);
-		timer.run = function() {
-			var message = "Hello!  The time is: " + new Date().getTime();
-			haxe_Log.trace("blog.local:  sending message:  " + message,{ fileName : "Main.hx", lineNumber : 509, className : "Main", methodName : "showSpeakerNotes"});
-			notesPopup.postMessage(message,"*");
-		};
 		this._win.addEventListener("message",function(event) {
-			haxe_Log.trace("received response: ",{ fileName : "Main.hx", lineNumber : 516, className : "Main", methodName : "showSpeakerNotes", customParams : [event.data]});
+			haxe_Log.trace("received response: ",{ fileName : "Main.hx", lineNumber : 641, className : "Main", methodName : "showSpeakerNotes", customParams : [event.data]});
 		},false);
 	}
 	,onKeyHandler: function(e) {
@@ -420,10 +484,10 @@ Main.prototype = {
 	,onClickHandler: function(e) {
 		var temp = e.currentTarget;
 		if(temp.className.indexOf("left") != -1) {
-			haxe_Log.trace("left",{ fileName : "Main.hx", lineNumber : 552, className : "Main", methodName : "onClickHandler"});
+			haxe_Log.trace("left",{ fileName : "Main.hx", lineNumber : 677, className : "Main", methodName : "onClickHandler"});
 			this.move(-1);
 		} else {
-			haxe_Log.trace("right",{ fileName : "Main.hx", lineNumber : 555, className : "Main", methodName : "onClickHandler"});
+			haxe_Log.trace("right",{ fileName : "Main.hx", lineNumber : 680, className : "Main", methodName : "onClickHandler"});
 			this.move(1);
 		}
 	}
@@ -438,8 +502,8 @@ Main.prototype = {
 		rawFile.onreadystatechange = function() {
 			if(rawFile.readyState == 4) {
 				if(rawFile.status == 200 || rawFile.status == 0) {
-					var file1 = rawFile.responseText;
-					_g.build(file1);
+					var md = rawFile.responseText;
+					if(!_g.isSpeakrrNotes) _g.build(md); else _g.buildNotes(md);
 				}
 			}
 		};
@@ -541,6 +605,9 @@ Std.__name__ = true;
 Std.string = function(s) {
 	return js_Boot.__string_rec(s,"");
 };
+Std["int"] = function(x) {
+	return x | 0;
+};
 Std.parseInt = function(x) {
 	var v = parseInt(x,10);
 	if(v == 0 && (HxOverrides.cca(x,1) == 120 || HxOverrides.cca(x,1) == 88)) v = parseInt(x);
@@ -589,6 +656,11 @@ StringTools.rtrim = function(s) {
 };
 StringTools.trim = function(s) {
 	return StringTools.ltrim(StringTools.rtrim(s));
+};
+StringTools.lpad = function(s,c,l) {
+	if(c.length <= 0) return s;
+	while(s.length < l) s = c + s;
+	return s;
 };
 StringTools.replace = function(s,sub,by) {
 	return s.split(sub).join(by);
@@ -1705,6 +1777,23 @@ markdown_TagState.prototype = {
 		return null;
 	}
 	,__class__: markdown_TagState
+};
+var utils_TimeUtil = function() { };
+utils_TimeUtil.__name__ = true;
+utils_TimeUtil.readableTime = function(mlseconds) {
+	var totalSec = Math.floor(mlseconds / 1000);
+	var hours = Math.floor(totalSec / 3600 % 24);
+	var minutes = Math.floor(totalSec / 60 % 60);
+	var seconds = Math.floor(totalSec % 60);
+	var result = StringTools.lpad(hours == null?"null":"" + hours,"0",2) + ":" + StringTools.lpad(minutes == null?"null":"" + minutes,"0",2) + ":" + StringTools.lpad(seconds == null?"null":"" + seconds,"0",2);
+	return result;
+};
+utils_TimeUtil.countdown = function(minutes,mlseconds) {
+	var totalSec = Math.round(minutes * 60);
+	var progressSec = Math.round(mlseconds / 1000);
+	var temp = totalSec - progressSec;
+	if(temp <= 0) temp = 0;
+	return utils_TimeUtil.readableTime(temp * 1000);
 };
 var $_, $fid = 0;
 function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $fid++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = function(){ return f.method.apply(f.scope, arguments); }; f.scope = o; f.method = m; o.hx__closures__[m.__id__] = f; } return f; }
