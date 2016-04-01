@@ -299,3 +299,31 @@ a:hover {
 
 
 
+.nav {
+    position: absolute;
+    top: 0;
+    color: black;
+    margin: auto;
+    width: 500px;
+    height: 100%;
+    background: white;
+    visibility: hidden;
+    opacity: 0;
+    z-index: 100;
+    -webkit-transition: all 1s ease;
+    transition: all 1s ease;
+	padding: 10px;
+}
+
+.mini-slide {
+	position: relative;
+	border: 10px solid black;
+	background-color: red;
+	width: 1024px;
+	height: 768px;
+	
+	transform-origin: left top;
+	-ms-transform: scale(0.1, 0.1); /* IE 9 */
+    -webkit-transform: scale(0.1, 0.1); /* Safari */
+    transform: scale(0.1, 0.1);
+}

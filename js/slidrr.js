@@ -144,6 +144,9 @@ Main.prototype = {
 		this.flexContainer = this._doc.createElement("div");
 		this.flexContainer.className = "slidrr-container";
 		this._doc.body.appendChild(this.flexContainer);
+		this.buildNav();
+		var _nav = this._doc.getElementsByClassName("nav")[0];
+		haxe_Log.trace(_nav,{ fileName : "Main.hx", lineNumber : 76, className : "Main", methodName : "build"});
 		var slides = md.split("\n" + this.spliteSlide + "\n");
 		this._total = slides.length;
 		var _g1 = 0;
@@ -175,6 +178,11 @@ Main.prototype = {
 			}
 			div.appendChild(container1);
 			this.flexContainer.appendChild(div);
+			var div2 = this._doc.createElement("div");
+			div2.id = "slidrr-mini-" + i;
+			div2.className = "mini-slide";
+			div2.innerHTML = slideHTML + "<!-- :: note :: \n" + noteHTML + "\n -->";
+			_nav.appendChild(div2);
 		}
 		this._win.onkeydown = function(e) {
 			_g.onKeyHandler(e);
@@ -217,6 +225,12 @@ Main.prototype = {
 		var _container = this._doc.createElement("div");
 		_container.className = "help";
 		_container.innerHTML = Markdown.markdownToHtml(this.showDefaults());
+		this._doc.body.appendChild(_container);
+	}
+	,buildNav: function() {
+		var _container = this._doc.createElement("div");
+		_container.className = "nav";
+		_container.innerHTML = "<div class='mini-slide'>test</div>";
 		this._doc.body.appendChild(_container);
 	}
 	,buildFocus: function() {
@@ -323,8 +337,18 @@ Main.prototype = {
 		}
 	}
 	,toggleHelp: function() {
-		haxe_Log.trace("toggleHelp",{ fileName : "Main.hx", lineNumber : 396, className : "Main", methodName : "toggleHelp"});
+		haxe_Log.trace("toggleHelp",{ fileName : "Main.hx", lineNumber : 421, className : "Main", methodName : "toggleHelp"});
 		var help = this._doc.getElementsByClassName("help")[0];
+		if(help.style.visibility == "visible") {
+			help.style.visibility = "hidden";
+			help.style.opacity = "0";
+		} else {
+			help.style.visibility = "visible";
+			help.style.opacity = "1";
+		}
+	}
+	,toggleNav: function() {
+		var help = this._doc.getElementsByClassName("nav")[0];
 		if(help.style.visibility == "visible") {
 			help.style.visibility = "hidden";
 			help.style.opacity = "0";
@@ -344,18 +368,18 @@ Main.prototype = {
 		}
 	}
 	,showSpeakerNotes: function() {
-		haxe_Log.trace("showSpeakerNotes",{ fileName : "Main.hx", lineNumber : 424, className : "Main", methodName : "showSpeakerNotes"});
+		haxe_Log.trace("showSpeakerNotes",{ fileName : "Main.hx", lineNumber : 462, className : "Main", methodName : "showSpeakerNotes"});
 		var html = "<!doctype html>\n<html lang=\"en\">\n\t<head>\n\t\t<meta charset=\"utf-8\">\n\t\t<title>Slidrr Speakers Notes</title>\n\n<script>\n//respond to events\nwindow.addEventListener('message',function(event) {\n\tconsole.log('message received:  ' + event.data,event);\n\tevent.source.postMessage('holla back youngin!',event.origin);\n},false);\n</script>\n\n\t</head>\n\t<body>\n\t\t<div id=\"current-slide\"></div>\n\t\t<div id=\"upcoming-slide\"><span class=\"label\">UPCOMING:</span></div>\n\t\t<div id=\"speaker-controls\">\n\t\t\t<div class=\"speaker-controls-time\">\n\t\t\t\t<h4 class=\"label\">Time <span class=\"reset-button\">Click to Reset</span></h4>\n\t\t\t\t<div class=\"clock\">\n\t\t\t\t\t<span class=\"clock-value\">0:00 AM</span>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"timer\">\n\t\t\t\t\t<span class=\"hours-value\">00</span><span class=\"minutes-value\">:00</span><span class=\"seconds-value\">:00</span>\n\t\t\t\t</div>\n\t\t\t\t<div class=\"clear\"></div>\n\t\t\t</div>\n\t\t\t<div class=\"speaker-controls-notes hidden\">\n\t\t\t\t<h4 class=\"label\">Notes</h4>\n\t\t\t\t<div class=\"value\"></div>\n\t\t\t</div>\n\t\t</div>\n\t</body>\n</html>";
 		var notesPopup = this._win.open("","Notes::","width=1100,height=700");
 		notesPopup.document.write(html);
 		var timer = new haxe_Timer(6000);
 		timer.run = function() {
 			var message = "Hello!  The time is: " + new Date().getTime();
-			haxe_Log.trace("blog.local:  sending message:  " + message,{ fileName : "Main.hx", lineNumber : 471, className : "Main", methodName : "showSpeakerNotes"});
+			haxe_Log.trace("blog.local:  sending message:  " + message,{ fileName : "Main.hx", lineNumber : 509, className : "Main", methodName : "showSpeakerNotes"});
 			notesPopup.postMessage(message,"*");
 		};
 		this._win.addEventListener("message",function(event) {
-			haxe_Log.trace("received response: ",{ fileName : "Main.hx", lineNumber : 478, className : "Main", methodName : "showSpeakerNotes", customParams : [event.data]});
+			haxe_Log.trace("received response: ",{ fileName : "Main.hx", lineNumber : 516, className : "Main", methodName : "showSpeakerNotes", customParams : [event.data]});
 		},false);
 	}
 	,onKeyHandler: function(e) {
@@ -388,15 +412,18 @@ Main.prototype = {
 		case 83:
 			this.showSpeakerNotes();
 			break;
+		case 78:
+			this.toggleNav();
+			break;
 		}
 	}
 	,onClickHandler: function(e) {
 		var temp = e.currentTarget;
 		if(temp.className.indexOf("left") != -1) {
-			haxe_Log.trace("left",{ fileName : "Main.hx", lineNumber : 513, className : "Main", methodName : "onClickHandler"});
+			haxe_Log.trace("left",{ fileName : "Main.hx", lineNumber : 552, className : "Main", methodName : "onClickHandler"});
 			this.move(-1);
 		} else {
-			haxe_Log.trace("right",{ fileName : "Main.hx", lineNumber : 516, className : "Main", methodName : "onClickHandler"});
+			haxe_Log.trace("right",{ fileName : "Main.hx", lineNumber : 555, className : "Main", methodName : "onClickHandler"});
 			this.move(1);
 		}
 	}
