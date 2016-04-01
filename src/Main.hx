@@ -68,6 +68,12 @@ class Main {
 		flexContainer = _doc.createDivElement();
 		flexContainer.className = 'slidrr-container';
 		_doc.body.appendChild(flexContainer);
+		
+		// first build nav to generate all slides in it
+		buildNav();
+		var _nav = _doc.getElementsByClassName('nav')[0];
+
+		trace(_nav);
 
 		var slides : Array<String> = md.split('\n'+spliteSlide+'\n');
 		_total = slides.length;
@@ -103,6 +109,16 @@ class Main {
 			
 			div.appendChild(container);
 			flexContainer.appendChild(div);
+			
+			
+			// test 
+			var div2 = _doc.createDivElement();
+			div2.id = "slidrr-mini-" + i;
+			div2.className = ('mini-slide');
+			div2.innerHTML = slideHTML + '<!-- :: note :: \n' + noteHTML + '\n -->';
+			
+			
+			_nav.appendChild(div2);
 		}
 		
 		// listen to keys	
@@ -120,6 +136,7 @@ class Main {
 		buildProgress();
 		buildControle();
 		buildHelp();
+
 		buildLogo();
 		buildFocus();
 				
@@ -178,6 +195,14 @@ class Main {
 		var _container = _doc.createDivElement();
 		_container.className = "help";
 		_container.innerHTML = Markdown.markdownToHtml(showDefaults());
+		_doc.body.appendChild(_container);
+	}
+	
+	function buildNav () : Void
+	{
+		var _container = _doc.createDivElement();
+		_container.className = "nav";
+		_container.innerHTML = "<div class='mini-slide'>test</div>";
 		_doc.body.appendChild(_container);
 	}
 	
@@ -405,6 +430,19 @@ class Main {
 		}
 	}
 
+	function toggleNav () : Void {
+		// trace('toggleNav');
+		var help = _doc.getElementsByClassName('nav')[0];
+		if(help.style.visibility == 'visible')
+		{
+			help.style.visibility = 'hidden';
+			help.style.opacity = '0';
+		} else {
+			help.style.visibility = 'visible';
+			help.style.opacity = '1';
+		}
+	}
+
 
 	function toggleFocus () : Void 
 	{
@@ -503,6 +541,7 @@ window.addEventListener(\'message\',function(event) {
 			case 72 : toggleHelp(); // h / help
 			case 66 : toggleFocus(); // b / black
 			case 83 : showSpeakerNotes();  // s / speaker note
+			case 78 : toggleNav();  // n / navigation
 		}
 	}
 	
