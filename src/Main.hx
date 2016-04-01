@@ -19,6 +19,7 @@ class Main {
 	private var _prevId : Int = 0;
 	
 	private var isFullScreen : Bool = false;
+	private var isSpeakrrNotes : Bool = false;
 	
 	// default
 	private var spliteSlide 	: String = '--';
@@ -26,7 +27,10 @@ class Main {
 	private var markdown 		: String = 'slidrr.md'; 
 	private var author 			: String = ''; 
 	private var css 			: String = '';
-	private var time 			: Int = 45; // min
+	private var time 			: Int = 10; // min
+	
+	private var timer = new haxe.Timer(1000); // 1000ms delay
+	private var startTime : Date;
 
 	private var queryArr : Array<String> = ['md', 'split', 'note', 'author', 'time'];
 
@@ -34,32 +38,134 @@ class Main {
 	
 	public function new () 
 	{
-		// [mck] DOM is ready
-		_doc.addEventListener("DOMContentLoaded", function(event) 
-		{	
-			// ?md=slidrrtest.md&author=mck
-			var map : Map<String, String> = new Map();
-			var arr = _win.location.search.substr(1).split("&");
-			for ( i in 0 ... arr.length ) {
-				var temp = arr[i].split("=");
-				map.set(temp[0],temp[1]);
-			}
-			
-			// trace((map.exists('author')) ? (map.get('author')) : 'niets');
-
-			if(map.exists('md')) 		markdown = map.get('md');
-			if(map.exists('split')) 	spliteSlide = map.get('split');
-			if(map.exists('note')) 		splitNote = map.get('note');
-			if(map.exists('author'))	author = map.get('author');
-			if(map.exists('time')) 		time = Std.parseInt (map.get('time'));
-			if(map.exists('css')) 		css = map.get('css');
-
-			if(css != '') addCSS (css);
-			
-    		readTextFile(markdown);
+		// [mck] DOM is ready (slidrr-presentation)
+		_doc.addEventListener("DOMContentLoaded", function(event) {				
+			init();
 		});
+		
+		// [mck] slidrr-speakrr-notes
+		// DOM is generated, so no need for check
+		if(_doc.getElementById('slidrr-speakrr-notes') != null){
+			isSpeakrrNotes = true;
+			init();
+		}
 	}
 	
+	function init ()
+	{
+		// ?md=slidrrtest.md&author=mck
+		var map : Map<String, String> = new Map();
+		var arr = _win.location.search.substr(1).split("&");
+		for ( i in 0 ... arr.length ) {
+			var temp = arr[i].split("=");
+			map.set(temp[0],temp[1]);
+		}
+		
+		// trace((map.exists('author')) ? (map.get('author')) : 'niets');
+
+		if(map.exists('md')) 		markdown = map.get('md');
+		if(map.exists('split')) 	spliteSlide = map.get('split');
+		if(map.exists('note')) 		splitNote = map.get('note');
+		if(map.exists('author'))	author = map.get('author');
+		if(map.exists('time')) 		time = Std.parseInt (map.get('time'));
+		if(map.exists('css')) 		css = map.get('css');
+
+		if(css != '') addCSS (css);
+		
+		readTextFile(markdown);
+	}
+	
+
+	/**
+	* use one js for both windows
+	* slidrr-presentation mode
+	* and slidrr-speakrr-notes mode
+	*/
+	function buildNotes (md:String){
+		Browser.console.info('notes');
+		
+		var slideCurrent = _doc.getElementById('current-slide');
+		var slideNext = _doc.getElementById('upcoming-slide');
+		
+		buildOneSlide(md,5,slideCurrent);
+		buildOneSlide(md,4,slideNext);
+
+		// [mck] start highlight plugin?
+		untyped hljs.initHighlightingOnLoad();
+		
+		startTime = Date.now();
+		timer.run = function () {setClock();};
+
+	}
+
+
+
+	function buildOneSlide(md:String,slideId:Int,el:Element)
+	{
+		flexContainer = _doc.createDivElement();
+		flexContainer.className = 'slidrr-container';
+		
+		var slides : Array<String> = md.split('\n'+spliteSlide+'\n');
+		_total = slides.length;
+		var i = slideId;
+
+		var slideArr = slides[i].split('\n'+splitNote+'\n');	
+		var vo : BackgroundVO = stripBackground(slideArr[0]);
+		var slideHTML = Markdown.markdownToHtml(vo.markdown);
+		var noteHTML = (slideArr.length>1) ? Markdown.markdownToHtml(slideArr[1]) : '';
+		
+		var container = _doc.createDivElement();
+		container.className = 'slidrr-flex';
+		
+		var div = _doc.createDivElement();
+		div.id = "slidrr-" + i;
+		div.className = ('slidrr');
+		
+		var container = _doc.createDivElement();
+		container.className = 'slidrr-flex';
+		container.innerHTML = slideHTML + '<!-- :: note :: \n' + noteHTML + '\n -->';
+		
+		if(vo.url != ''){
+			div.className += ' slidrr-fullscreen glow';
+			div.style.backgroundImage = 'url(${vo.url})';
+		}
+		if(vo.color != '') {
+			if(vo.url == '') div.className += ' glow';
+			div.style.backgroundColor = '${vo.color}';
+			var hex = Std.parseInt (vo.color.replace("#","0x"));
+			// [mck] check if background color is half white/black and change the color of the text 
+			if(hex > (0xffffff/2)) div.className += ' dark';		
+		}
+		
+		div.appendChild(container);
+		flexContainer.appendChild(div);
+		
+		// test 
+		var div2 = _doc.createDivElement();
+		div2.id = "slidrr-mini-" + i;
+		div2.className = ('mini-slide');
+		div2.innerHTML = slideHTML + '<!-- :: note :: \n' + noteHTML + '\n -->';
+	
+		var notzz = _doc.getElementsByClassName("speaker-controls-notes")[0];
+		if(notzz != null && noteHTML != ''){
+			notzz.innerHTML = noteHTML;
+		}
+	
+		el.appendChild(flexContainer);
+	}
+	
+	function setClock():Void{
+		var timer = _doc.getElementsByClassName('timer')[0];
+		var clock = _doc.getElementsByClassName('clock')[0];
+		var countdown = _doc.getElementsByClassName('countdown')[0];
+		var now = Date.now();
+		var progress = Std.int (now.getTime() - startTime.getTime());
+		timer.innerHTML = '${utils.TimeUtil.readableTime(progress)}';
+		clock.innerHTML = '${Std.string(now.getHours()).lpad('0',2)}:${Std.string(now.getMinutes()).lpad('0',2)}:${Std.string(now.getSeconds()+1).lpad('0',2)}';
+		countdown.innerHTML = '${utils.TimeUtil.countdown(time,progress)}';
+	}
+
+
 	/**
 	* first function called after reading md file
 	*/
@@ -72,8 +178,6 @@ class Main {
 		// first build nav to generate all slides in it
 		buildNav();
 		var _nav = _doc.getElementsByClassName('nav')[0];
-
-		trace(_nav);
 
 		var slides : Array<String> = md.split('\n'+spliteSlide+'\n');
 		_total = slides.length;
@@ -462,11 +566,29 @@ class Main {
 		trace('showSpeakerNotes');
 		// var notesPopup = _win.open( 'notes.html', 'Notes', 'width=1100,height=700' );
 		
-		var html  = '<!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="utf-8">
-		<title>Slidrr Speakers Notes</title>
+		var html  = '
+<!DOCTYPE html>
+<html lang="en" id="slidrr-speakrr-notes">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+	
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="favicon.ico">
+	
+	<meta name="google" value="notranslate">
+	
+	<title>Slidrr :: speakrr-notes</title>
+	
+	<!-- Latest compiled and minified CSS -->
+	<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">-->
+	
+	<!-- custom css -->
+	<link rel="stylesheet" href="css/slidrr.css" >
+	<link rel="stylesheet" href="css/monokai-sublime-min.css" >
 
 <script>
 //respond to events
@@ -476,39 +598,42 @@ window.addEventListener(\'message\',function(event) {
 },false);
 </script>
 
-	</head>
-	<body>
-		<div id="current-slide"></div>
-		<div id="upcoming-slide"><span class="label">UPCOMING:</span></div>
-		<div id="speaker-controls">
-			<div class="speaker-controls-time">
-				<h4 class="label">Time <span class="reset-button">Click to Reset</span></h4>
-				<div class="clock">
-					<span class="clock-value">0:00 AM</span>
-				</div>
-				<div class="timer">
-					<span class="hours-value">00</span><span class="minutes-value">:00</span><span class="seconds-value">:00</span>
-				</div>
-				<div class="clear"></div>
-			</div>
-			<div class="speaker-controls-notes hidden">
-				<h4 class="label">Notes</h4>
-				<div class="value"></div>
-			</div>
+</head>
+<body>
+	
+	<div id="current-slide"></div>
+	<div id="upcoming-slide"></div>
+	<div id="speaker-controls">
+		<div class="speaker-controls-time">
+			<h4 class="label">Time <span class="reset-button">Click to Reset</span></h4>
+			<div class="clock"></div>
+			<div class="timer"></div>
+			<div class="countdown"></div>
 		</div>
-	</body>
-</html>';
+		<div class="speaker-controls-notes">
+			<h4 class="label">Notes</h4>
+			<div class="value"></div>
+		</div>
+	</div>
+		
+		
+	<!-- Code generated using Haxe -->
+	<script type="text/javascript" src="js/highlight.pack.js"></script>
+	<script type="text/javascript" src="js/slidrr.js"></script>
+</body>
+</html>
+';
 		
 		
 		var notesPopup = _win.open('', 'Notes::','width=1100,height=700');
 		notesPopup.document.write(html);
 
-		var timer = new haxe.Timer(6000); // 1000ms delay
-		timer.run = function() { 
-			var message = 'Hello!  The time is: ' + (Date.now().getTime());
-			trace('blog.local:  sending message:  ' + message);
-			notesPopup.postMessage(message,'*'); //send the message and target URI
-		}
+		// var timer = new haxe.Timer(6000); // 1000ms delay
+		// timer.run = function() { 
+		// 	var message = 'Hello!  The time is: ' + (Date.now().getTime());
+		// 	trace('blog.local:  sending message:  ' + message);
+		// 	notesPopup.postMessage(message,'*'); //send the message and target URI
+		// }
 		
 		//listen to holla back
 		_win.addEventListener('message',function(event) {
@@ -575,15 +700,18 @@ window.addEventListener(\'message\',function(event) {
 			{
 				if(rawFile.status == 200 || rawFile.status == 0)
 				{
-					var file = rawFile.responseText;
-					build(file);
+					var md = rawFile.responseText;
+					if(!isSpeakrrNotes)
+						build(md);
+					else 
+						buildNotes(md);
 				} 
 			} 
 		}
 		rawFile.send();
 	}
 	
-	// ____________________________________ Haxe is awewome! ____________________________________
+	// ____________________________________ Haxe is awesome! ____________________________________
 
 	static public function main () {
 		var app = new Main ();
