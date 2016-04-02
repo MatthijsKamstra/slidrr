@@ -5,6 +5,8 @@ import js.Browser;
 import js.html.*;
 import js.html.XMLHttpRequest;
 
+import model.App;
+
 using StringTools;
 
 class Main {
@@ -21,17 +23,6 @@ class Main {
 	private var isFullScreen : Bool = false;
 	private var isSpeakrrNotes : Bool = false;
 	
-	// default
-	private var spliteSlide 	: String = '--';
-	private var splitNote 		: String = '??';
-	private var markdown 		: String = 'slidrr.md'; 
-	private var author 			: String = ''; 
-	private var css 			: String = '';
-	private var time 			: Int = 10; // min
-	
-	private var timer = new haxe.Timer(1000); // 1000ms delay
-	private var startTime : Date;
-
 	private var queryArr : Array<String> = ['md', 'split', 'note', 'author', 'time'];
 
 	private var flexContainer : DivElement;
@@ -63,168 +54,41 @@ class Main {
 		
 		// trace((map.exists('author')) ? (map.get('author')) : 'niets');
 
-		if(map.exists('md')) 		markdown = map.get('md');
-		if(map.exists('split')) 	spliteSlide = map.get('split');
-		if(map.exists('note')) 		splitNote = map.get('note');
-		if(map.exists('author'))	author = map.get('author');
-		if(map.exists('time')) 		time = Std.parseInt (map.get('time'));
-		if(map.exists('css')) 		css = map.get('css');
+		if(map.exists('md')) 		App.markdown = map.get('md');
+		if(map.exists('split')) 	App.spliteSlide = map.get('split');
+		if(map.exists('note')) 		App.splitNote = map.get('note');
+		if(map.exists('author'))	App.author = map.get('author');
+		if(map.exists('time')) 		App.time = Std.parseInt (map.get('time'));
+		if(map.exists('css')) 		App.css = map.get('css');
 
-		if(css != '') addCSS (css);
-		
-		readTextFile(markdown);
+		if(App.css != '') addCSS (App.css);
+	
+		readTextFile(App.markdown);
 	}
 	
 
-	/**
-	* use one js for both windows
-	* slidrr-presentation mode
-	* and slidrr-speakrr-notes mode
-	*/
-	function buildNotes (md:String){
-		Browser.console.info('notes');
-		
-		var slideCurrent = _doc.getElementById('current-slide');
-		var slideNext = _doc.getElementById('upcoming-slide');
-		
-		buildOneSlide(md,5,slideCurrent);
-		buildOneSlide(md,4,slideNext);
-
-		// [mck] start highlight plugin?
-		untyped hljs.initHighlightingOnLoad();
-		
-		startTime = Date.now();
-		timer.run = function () {setClock();};
-
-	}
-
-
-
-	function buildOneSlide(md:String,slideId:Int,el:Element)
+	function buildNotes (md:String) : Void
 	{
-		flexContainer = _doc.createDivElement();
-		flexContainer.className = 'slidrr-container';
-		
-		var slides : Array<String> = md.split('\n'+spliteSlide+'\n');
-		_total = slides.length;
-		var i = slideId;
-
-		var slideArr = slides[i].split('\n'+splitNote+'\n');	
-		var vo : BackgroundVO = stripBackground(slideArr[0]);
-		var slideHTML = Markdown.markdownToHtml(vo.markdown);
-		var noteHTML = (slideArr.length>1) ? Markdown.markdownToHtml(slideArr[1]) : '';
-		
-		var container = _doc.createDivElement();
-		container.className = 'slidrr-flex';
-		
-		var div = _doc.createDivElement();
-		div.id = "slidrr-" + i;
-		div.className = ('slidrr');
-		
-		var container = _doc.createDivElement();
-		container.className = 'slidrr-flex';
-		container.innerHTML = slideHTML + '<!-- :: note :: \n' + noteHTML + '\n -->';
-		
-		if(vo.url != ''){
-			div.className += ' slidrr-fullscreen glow';
-			div.style.backgroundImage = 'url(${vo.url})';
-		}
-		if(vo.color != '') {
-			if(vo.url == '') div.className += ' glow';
-			div.style.backgroundColor = '${vo.color}';
-			var hex = Std.parseInt (vo.color.replace("#","0x"));
-			// [mck] check if background color is half white/black and change the color of the text 
-			if(hex > (0xffffff/2)) div.className += ' dark';		
-		}
-		
-		div.appendChild(container);
-		flexContainer.appendChild(div);
-		
-		// test 
-		var div2 = _doc.createDivElement();
-		div2.id = "slidrr-mini-" + i;
-		div2.className = ('mini-slide');
-		div2.innerHTML = slideHTML + '<!-- :: note :: \n' + noteHTML + '\n -->';
-	
-		var notzz = _doc.getElementsByClassName("speaker-controls-notes")[0];
-		if(notzz != null && noteHTML != ''){
-			notzz.innerHTML = noteHTML;
-		}
-	
-		el.appendChild(flexContainer);
-	}
-	
-	function setClock():Void{
-		var timer = _doc.getElementsByClassName('timer')[0];
-		var clock = _doc.getElementsByClassName('clock')[0];
-		var countdown = _doc.getElementsByClassName('countdown')[0];
-		var now = Date.now();
-		var progress = Std.int (now.getTime() - startTime.getTime());
-		timer.innerHTML = '${utils.TimeUtil.readableTime(progress)}';
-		clock.innerHTML = '${Std.string(now.getHours()).lpad('0',2)}:${Std.string(now.getMinutes()).lpad('0',2)}:${Std.string(now.getSeconds()+1).lpad('0',2)}';
-		countdown.innerHTML = '${utils.TimeUtil.countdown(time,progress)}';
+		var speakrrNotes = new view.SpeakrrNotesView(md);
 	}
 
-
-	/**
-	* first function called after reading md file
-	*/
-	private function build(md:String) : Void
+	function buildPresentation (md:String) : Void
 	{
-		flexContainer = _doc.createDivElement();
+		var flexContainer = _doc.createDivElement();
 		flexContainer.className = 'slidrr-container';
 		_doc.body.appendChild(flexContainer);
+		
+		var slides : Array<String> = md.split('\n'+App.spliteSlide+'\n');
+		_total = slides.length;
+		for ( i in 0 ... _total ) 
+		{
+			new view.SlidrrView(md,flexContainer,i);
+		}
 		
 		// first build nav to generate all slides in it
 		buildNav();
 		var _nav = _doc.getElementsByClassName('nav')[0];
 
-		var slides : Array<String> = md.split('\n'+spliteSlide+'\n');
-		_total = slides.length;
-		for ( i in 0 ... _total ) 
-		{
-			var slideArr = slides[i].split('\n'+splitNote+'\n');	
-			var vo : BackgroundVO = stripBackground(slideArr[0]);
-			var slideHTML = Markdown.markdownToHtml(vo.markdown);
-			var noteHTML = (slideArr.length>1) ? Markdown.markdownToHtml(slideArr[1]) : '';
-			
-			var container = _doc.createDivElement();
-			container.className = 'slidrr-flex';
-			
-			var div = _doc.createDivElement();
-			div.id = "slidrr-" + i;
-			div.className = ('slidrr hidden');
-			
-			var container = _doc.createDivElement();
-			container.className = 'slidrr-flex';
-			container.innerHTML = slideHTML + '<!-- :: note :: \n' + noteHTML + '\n -->';
-			
-			if(vo.url != ''){
-				div.className += ' slidrr-fullscreen glow';
-				div.style.backgroundImage = 'url(${vo.url})';
-			}
-			if(vo.color != '') {
-				if(vo.url == '') div.className += ' glow';
-				div.style.backgroundColor = '${vo.color}';
-				var hex = Std.parseInt (vo.color.replace("#","0x"));
-				// [mck] check if background color is half white/black and change the color of the text 
-				if(hex > (0xffffff/2)) div.className += ' dark';		
-			}
-			
-			div.appendChild(container);
-			flexContainer.appendChild(div);
-			
-			
-			// test 
-			var div2 = _doc.createDivElement();
-			div2.id = "slidrr-mini-" + i;
-			div2.className = ('mini-slide');
-			div2.innerHTML = slideHTML + '<!-- :: note :: \n' + noteHTML + '\n -->';
-			
-			
-			_nav.appendChild(div2);
-		}
-		
 		// listen to keys	
 		_win.onkeydown = function (e){
 			onKeyHandler(e);
@@ -341,60 +205,6 @@ class Main {
 	    s.setAttribute('href', '${css}');
 	    head.appendChild(s);
 	}
-
-	/**
-	 * check if the first item is an image, then make it full screen
-	 * if the first item is not an image, this will do nothing and return ['','markdown']
-	 * 
-	 * @param		content of markdown file
-	 *
-	 * @return 		BackgroundVO with {markdown, color, url}
-	 */
-	function stripBackground (md:String) : BackgroundVO
-	{
-		// default values
-		var _url = '';
-		var _color = '';
-		var _markdown = md;
-		
-		// check for image, check if first item is image
-		if (md.indexOf('![') != -1){
-			// [mck] there is an image in the md
-			var temp = md.substring(0, md.indexOf('!['));
-			if(temp.replace('\n','').replace('\t','').replace('\r','').replace(' ','').length == 0){
-				_markdown = '';
-				// [mck] get image and the rest of the _markdown content
-				var arr = md.split('\n');
-				for ( i in 0 ... arr.length ) {
-					if (arr[i].indexOf('![') != -1)
-					{
-						_color = validColor (arr[i]);
-						_url = arr[i].split('](')[1].replace(')','');
-					} else {
-						_markdown += arr[i] + '\n';
-					} 
-				}
-			}
-		}
-		
-		var _vo : BackgroundVO  = {
-			url : _url,
-			color : _color,
-			markdown : _markdown	
-		};
-		
-		return _vo;
-	}
-	
-	function validColor(str:String):String
-	{
-		var _str = '';
-		var _temp = str.split('](')[0].replace('![', '').ltrim().rtrim();
-		if (_temp.indexOf('#') == 0){
-			_str = _temp;
-		}
-		return _str;
-	}
 	
 	
 	function showDefaults () : String {
@@ -411,9 +221,9 @@ class Main {
 | speaker notes | `s` | 
 ';
 			
-		str += '\n- markdown: ${markdown}';
-		str += '\n- slide split: ${spliteSlide}';
-		str += '\n- note split: ${splitNote}';
+		str += '\n- markdown: ${App.markdown}';
+		str += '\n- slide split: ${App.spliteSlide}';
+		str += '\n- note split: ${App.splitNote}';
 	
 		str += '\n---\n';	
 		for ( i in 0 ... queryArr.length ) {
@@ -702,7 +512,7 @@ window.addEventListener(\'message\',function(event) {
 				{
 					var md = rawFile.responseText;
 					if(!isSpeakrrNotes)
-						build(md);
+						buildPresentation(md);
 					else 
 						buildNotes(md);
 				} 
@@ -716,11 +526,4 @@ window.addEventListener(\'message\',function(event) {
 	static public function main () {
 		var app = new Main ();
 	}
-}
-
-typedef BackgroundVO = 
-{
-	var url : String;
-	var color : String;
-	var markdown : String;	
 }
