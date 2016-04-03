@@ -109,10 +109,18 @@ var Main = function() {
 	this._win = window;
 	this._doc = window.document;
 	var _g = this;
-	if(this._doc.getElementById("slidrr-speakrr-notes") != null) this.isSpeakrrNotes = true;
+	if(this._doc.getElementById("slidrr-speakrr-notes") != null) {
+		window.console.debug("** Test speakrr notes ** ");
+		this.isSpeakrrNotes = true;
+	}
+	if(this._doc.getElementById("slidrr-speakrr-notes-gen") != null) {
+		window.console.info("** Generated speakrr notes ** ");
+		this.isSpeakrrNotes = true;
+		this.init();
+	}
 	this._doc.addEventListener("DOMContentLoaded",function(event) {
+		window.console.info("** DOM ready **");
 		_g.init();
-		window.console.debug("dom");
 	});
 };
 Main.__name__ = true;
@@ -285,7 +293,7 @@ Main.prototype = {
 		}
 	}
 	,toggleHelp: function() {
-		haxe_Log.trace("toggleHelp",{ fileName : "Main.hx", lineNumber : 350, className : "Main", methodName : "toggleHelp"});
+		haxe_Log.trace("toggleHelp",{ fileName : "Main.hx", lineNumber : 360, className : "Main", methodName : "toggleHelp"});
 		var help = this._doc.getElementsByClassName("help")[0];
 		if(help.style.visibility == "visible") {
 			help.style.visibility = "hidden";
@@ -316,12 +324,12 @@ Main.prototype = {
 		}
 	}
 	,showSpeakerNotes: function() {
-		haxe_Log.trace("showSpeakerNotes",{ fileName : "Main.hx", lineNumber : 391, className : "Main", methodName : "showSpeakerNotes"});
-		var html = "\n<!DOCTYPE html>\n<html lang=\"en\" id=\"slidrr-speakrr-notes\">\n  <head>\n    <meta charset=\"utf-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->\n\t\n    <meta name=\"description\" content=\"\">\n    <meta name=\"author\" content=\"\">\n    <link rel=\"icon\" href=\"favicon.ico\">\n\t\n\t<meta name=\"google\" value=\"notranslate\">\n\t\n\t<title>Slidrr :: speakrr-notes</title>\n\t\n\t<!-- Latest compiled and minified CSS -->\n\t<!--<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css\" integrity=\"sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7\" crossorigin=\"anonymous\">-->\n\t\n\t<!-- custom css -->\n\t<link rel=\"stylesheet\" href=\"css/slidrr.css\" >\n\t<link rel=\"stylesheet\" href=\"css/monokai-sublime-min.css\" >\n\n<script>\n//respond to events\nwindow.addEventListener('message',function(event) {\n\tconsole.log('message received:  ' + event.data,event);\n\tevent.source.postMessage('holla back youngin!',event.origin);\n},false);\n</script>\n\n</head>\n<body>\n\t\n\t<div id=\"current-slide\"></div>\n\t<div id=\"upcoming-slide\"></div>\n\t<div id=\"speaker-controls\">\n\t\t<div class=\"speaker-controls-time\">\n\t\t\t<h4 class=\"label\">Time <span class=\"reset-button\">Click to Reset</span></h4>\n\t\t\t<div class=\"clock\"></div>\n\t\t\t<div class=\"timer\"></div>\n\t\t\t<div class=\"countdown\"></div>\n\t\t</div>\n\t\t<div class=\"speaker-controls-notes\">\n\t\t\t<h4 class=\"label\">Notes</h4>\n\t\t\t<div class=\"value\"></div>\n\t\t</div>\n\t</div>\n\t\t\n\t\t\n\t<!-- Code generated using Haxe -->\n\t<script type=\"text/javascript\" src=\"js/highlight.pack.js\"></script>\n\t<script type=\"text/javascript\" src=\"js/slidrr.js\"></script>\n</body>\n</html>\n";
+		haxe_Log.trace("showSpeakerNotes",{ fileName : "Main.hx", lineNumber : 401, className : "Main", methodName : "showSpeakerNotes"});
+		var html = "\n<!DOCTYPE html>\n<html lang=\"en\" id=\"slidrr-speakrr-notes-gen\">\n  <head>\n    <meta charset=\"utf-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->\n\t\n    <meta name=\"description\" content=\"\">\n    <meta name=\"author\" content=\"\">\n    <link rel=\"icon\" href=\"favicon.ico\">\n\t\n\t<meta name=\"google\" value=\"notranslate\">\n\t\n\t<title>Slidrr :: Speakrr-Notes</title>\n\t\n\t<!-- Latest compiled and minified CSS -->\n\t<!--<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css\" integrity=\"sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7\" crossorigin=\"anonymous\">-->\n\t\n\t<!-- custom css -->\n\t<link rel=\"stylesheet\" href=\"css/slidrr.css\" >\n\t<link rel=\"stylesheet\" href=\"css/monokai-sublime-min.css\" >\n\n<script>\n//respond to events\nwindow.addEventListener('message',function(event) {\n\tconsole.log('message received:  ' + event.data,event);\n\tevent.source.postMessage('holla back youngin!',event.origin);\n},false);\n</script>\n\n</head>\n<body>\n\t\n\t<div id=\"current-slide\"></div>\n\t<div id=\"upcoming-slide\"></div>\n\t<div id=\"speaker-controls\">\n\t\t<div class=\"speaker-controls-time\">\n\t\t\t<h4 class=\"label\">Time <span class=\"reset-button\">Click to Reset</span></h4>\n\t\t\t<div class=\"clock\"></div>\n\t\t\t<div class=\"timer\"></div>\n\t\t\t<div class=\"countdown\"></div>\n\t\t</div>\n\t\t<div class=\"speaker-controls-notes\">\n\t\t\t<h4 class=\"label\">Notes</h4>\n\t\t\t<div class=\"value\"></div>\n\t\t</div>\n\t</div>\n\t\t\n\t\t\n\t<!-- Code generated using Haxe -->\n\t<script type=\"text/javascript\" src=\"js/highlight.pack.js\"></script>\n\t<script type=\"text/javascript\" src=\"js/slidrr.js\"></script>\n</body>\n</html>\n";
 		var notesPopup = this._win.open("","Notes::","width=1100,height=700");
 		notesPopup.document.write(html);
 		this._win.addEventListener("message",function(event) {
-			haxe_Log.trace("received response: ",{ fileName : "Main.hx", lineNumber : 466, className : "Main", methodName : "showSpeakerNotes", customParams : [event.data]});
+			haxe_Log.trace("received response: ",{ fileName : "Main.hx", lineNumber : 479, className : "Main", methodName : "showSpeakerNotes", customParams : [event.data]});
 		},false);
 	}
 	,onKeyHandler: function(e) {
@@ -362,10 +370,10 @@ Main.prototype = {
 	,onClickHandler: function(e) {
 		var temp = e.currentTarget;
 		if(temp.className.indexOf("left") != -1) {
-			haxe_Log.trace("left",{ fileName : "Main.hx", lineNumber : 502, className : "Main", methodName : "onClickHandler"});
+			haxe_Log.trace("left",{ fileName : "Main.hx", lineNumber : 515, className : "Main", methodName : "onClickHandler"});
 			this.move(-1);
 		} else {
-			haxe_Log.trace("right",{ fileName : "Main.hx", lineNumber : 505, className : "Main", methodName : "onClickHandler"});
+			haxe_Log.trace("right",{ fileName : "Main.hx", lineNumber : 518, className : "Main", methodName : "onClickHandler"});
 			this.move(1);
 		}
 	}
@@ -1671,6 +1679,9 @@ utils_TimeUtil.readableTime = function(mlseconds) {
 	var result = StringTools.lpad(hours == null?"null":"" + hours,"0",2) + ":" + StringTools.lpad(minutes == null?"null":"" + minutes,"0",2) + ":" + StringTools.lpad(seconds == null?"null":"" + seconds,"0",2);
 	return result;
 };
+utils_TimeUtil.readableDate = function(date) {
+	return "" + StringTools.lpad(Std.string(date.getHours()),"0",2) + ":" + StringTools.lpad(Std.string(date.getMinutes()),"0",2) + ":" + StringTools.lpad(Std.string(date.getSeconds() + 1),"0",2);
+};
 utils_TimeUtil.countdown = function(minutes,mlseconds) {
 	var totalSec = Math.round(minutes * 60);
 	var progressSec = Math.round(mlseconds / 1000);
@@ -1678,8 +1689,16 @@ utils_TimeUtil.countdown = function(minutes,mlseconds) {
 	if(temp <= 0) temp = 0;
 	return utils_TimeUtil.readableTime(temp * 1000);
 };
+utils_TimeUtil.countdownSeconds = function(seconds,mlseconds) {
+	var totalSec = Math.round(seconds);
+	var progressSec = Math.round(mlseconds / 1000);
+	var temp = totalSec - progressSec;
+	if(temp <= 0) temp = 0;
+	return utils_TimeUtil.readableTime(temp * 1000);
+};
 var view_SlidrrView = function(md,el,slideId) {
 	var slides = md.split("\n" + model_App.spliteSlide + "\n");
+	this.set_totalSlides(slides.length);
 	var i = slideId;
 	var slideArr = slides[i].split("\n" + model_App.splitNote + "\n");
 	var vo = this.stripBackground(slideArr[0]);
@@ -1720,6 +1739,12 @@ view_SlidrrView.prototype = {
 	,set_notesHtml: function(value) {
 		return this._notesHtml = value;
 	}
+	,get_totalSlides: function() {
+		return this._totalSlides;
+	}
+	,set_totalSlides: function(value) {
+		return this._totalSlides = value;
+	}
 	,stripBackground: function(md) {
 		var _url = "";
 		var _color = "";
@@ -1753,43 +1778,79 @@ view_SlidrrView.prototype = {
 };
 var view_SpeakrrNotesView = function(md) {
 	this.timer = new haxe_Timer(1000);
+	this._win = window;
 	this._doc = window.document;
+	var _g = this;
 	window.console.info("Speakrr-Notes");
 	this.slideCurrent = js_Boot.__cast(this._doc.getElementById("current-slide") , HTMLDivElement);
 	this.slideNext = js_Boot.__cast(this._doc.getElementById("upcoming-slide") , HTMLDivElement);
-	window.console.info(this.slideCurrent.clientWidth);
-	window.console.info(this.slideCurrent.clientHeight);
 	this.buildNotes(md);
+	this.onResizeHandler();
+	this._win.onresize = function() {
+		_g.onResizeHandler();
+	};
 };
 view_SpeakrrNotesView.__name__ = true;
 view_SpeakrrNotesView.prototype = {
 	buildNotes: function(md) {
 		var _g = this;
-		var slideCurrentContainer = this._doc.createElement("div");
-		slideCurrentContainer.className = "slidrr-container";
-		this.slideCurrent.appendChild(slideCurrentContainer);
-		var slideNextContainer = this._doc.createElement("div");
-		slideNextContainer.className = "slidrr-container";
-		this.slideNext.appendChild(slideNextContainer);
-		var currentSlide = new view_SlidrrView(md,slideCurrentContainer,5);
-		var nextSlide = new view_SlidrrView(md,slideNextContainer,4);
+		this.slideCurrentContainer = this._doc.createElement("div");
+		this.slideCurrentContainer.className = "slidrr-container current-slidrr";
+		this.slideCurrent.appendChild(this.slideCurrentContainer);
+		this.slideNextContainer = this._doc.createElement("div");
+		this.slideNextContainer.className = "slidrr-container next-slidrr";
+		this.slideNext.appendChild(this.slideNextContainer);
+		var currentSlide = new view_SlidrrView(md,this.slideCurrentContainer,5);
+		var nextSlide = new view_SlidrrView(md,this.slideNextContainer,4);
+		this.totalSlides = nextSlide.get_totalSlides();
 		var elSpeakrrNotes = window.document.getElementsByClassName("speaker-controls-notes")[0];
 		if(elSpeakrrNotes != null && currentSlide.get_notesHtml() != "") elSpeakrrNotes.innerHTML = currentSlide.get_notesHtml();
 		hljs.initHighlightingOnLoad();
+		this.restartSlideTimer();
 		this.startTime = new Date();
 		this.timer.run = function() {
 			_g.setClock();
 		};
 	}
+	,restartSlideTimer: function() {
+		this.slideStartTime = new Date();
+	}
 	,setClock: function() {
 		var timer = this._doc.getElementsByClassName("timer")[0];
 		var clock = this._doc.getElementsByClassName("clock")[0];
 		var countdown = this._doc.getElementsByClassName("countdown")[0];
+		var slidecountdown = this._doc.getElementsByClassName("slide-countdown")[0];
+		var temp = this._doc.getElementsByClassName("temp2")[0];
+		var totalPresentationTimeSec = Math.round(model_App.time * 60);
+		var perSlideTimeSec = totalPresentationTimeSec / this.totalSlides | 0;
 		var now = new Date();
 		var progress = Std["int"](now.getTime() - this.startTime.getTime());
-		timer.innerHTML = "<span class=\"time-text\">start from presentation:</span> " + utils_TimeUtil.readableTime(progress);
-		clock.innerHTML = "<span class=\"time-text\">current time:</span> " + StringTools.lpad(Std.string(now.getHours()),"0",2) + ":" + StringTools.lpad(Std.string(now.getMinutes()),"0",2) + ":" + StringTools.lpad(Std.string(now.getSeconds() + 1),"0",2);
-		countdown.innerHTML = "<span class=\"time-text\">countdown time:</span> " + utils_TimeUtil.countdown(model_App.time,progress);
+		var slideprogress = Std["int"](now.getTime() - this.slideStartTime.getTime());
+		timer.innerHTML = "<span class=\"time-text\">during :</span><span class=\"time\">" + utils_TimeUtil.readableTime(progress) + "</span>";
+		clock.innerHTML = "<span class=\"time-text\">time:</span><span class=\"time\">" + utils_TimeUtil.readableDate(now) + "</span>";
+		countdown.innerHTML = "<span class=\"time-text\">countdown:</span><span class=\"time\">" + utils_TimeUtil.countdown(model_App.time,progress) + "</span>";
+		slidecountdown.innerHTML = "<span class=\"time-text\">slide countdown:</span><span class=\"time\">" + utils_TimeUtil.countdownSeconds(perSlideTimeSec,slideprogress) + "</span>";
+		temp.innerHTML = "total slides: " + this.totalSlides + ", totaltime: " + model_App.time + " minutes, time per slide: " + perSlideTimeSec + " seconds";
+	}
+	,onResizeHandler: function() {
+		var w = window.innerWidth;
+		var currentScale = 0.60;
+		this.slideCurrent.style.width = Std.string(Math.floor(w * currentScale)) + "px";
+		this.slideCurrent.style.height = Std.string(Math.floor(this.slideCurrent.clientWidth / 1024 * 768)) + "px";
+		this.slideNext.style.width = Std.string(Math.floor(w * (1 - currentScale))) + "px";
+		this.slideNext.style.height = Std.string(Math.floor(this.slideNext.clientWidth / 1024 * 768)) + "px";
+		this.scaleEl();
+	}
+	,scaleEl: function() {
+		var scale = 0.1;
+		if(this.slideCurrentContainer != null) {
+			scale = this.slideCurrent.clientWidth / 1024;
+			this.slideCurrentContainer.style.transform = "scale(" + scale + "," + scale + ")";
+		}
+		if(this.slideNextContainer != null) {
+			scale = this.slideNext.clientWidth / 1024;
+			this.slideNextContainer.style.transform = "scale(" + scale + "," + scale + ")";
+		}
 	}
 	,__class__: view_SpeakrrNotesView
 };
