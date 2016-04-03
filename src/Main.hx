@@ -29,17 +29,19 @@ class Main {
 	
 	public function new () 
 	{
-		// [mck] DOM is ready (slidrr-presentation)
-		_doc.addEventListener("DOMContentLoaded", function(event) {				
-			init();
-		});
-		
 		// [mck] slidrr-speakrr-notes
 		// DOM is generated, so no need for check
 		if(_doc.getElementById('slidrr-speakrr-notes') != null){
+			// Browser.console.debug('check for notes');
 			isSpeakrrNotes = true;
-			init();
+			// init();
 		}
+		// [mck] DOM is ready (slidrr-presentation)
+		_doc.addEventListener("DOMContentLoaded", function(event) {				
+			init();
+			Browser.console.debug('dom');
+		});
+		
 	}
 	
 	function init ()
@@ -83,6 +85,7 @@ class Main {
 		for ( i in 0 ... _total ) 
 		{
 			new view.SlidrrView(md,flexContainer,i);
+			toggleVisibleSlide(i, false);
 		}
 		
 		// first build nav to generate all slides in it
@@ -253,10 +256,10 @@ class Main {
 	 */
 	function readURL () : Void 
 	{
-		// trace('readURL');
 		var hash = _win.location.hash;
 		var id = Std.parseInt ( hash.split('/')[1] );
 		if(id == null) id = 0;
+		// trace('readURL() $hash, $id');         
 		slideId(id,true);
 	}
 
@@ -280,15 +283,20 @@ class Main {
 	
 	function slideId (id:Int, isVisible:Bool) : Void 
 	{
-		var slide = _doc.getElementById("slidrr-" + id);
-		var css = slide.className.replace('hidden','').rtrim().replace('  ',' ');
-		slide.className = (isVisible) ? css : (css + " hidden");
+		toggleVisibleSlide(id, isVisible);
 		
 		_currentId = id;
 		_prevId = id;
 		
 		writeURL (id);
 		updateProgress ();
+	}
+
+	function toggleVisibleSlide(id:Int, isVisible:Bool) : Void
+	{
+		var slide = _doc.getElementById("slidrr-" + id);
+		var css = slide.className.replace('hidden','').rtrim().replace('  ',' ');
+		slide.className = (isVisible) ? css : (css + " hidden");	
 	}
 
 
