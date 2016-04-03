@@ -9,6 +9,15 @@ using StringTools;
 
 class SlidrrView
 {
+	public var notesHtml ( get_notesHtml , set_notesHtml ) : String;
+	private var _notesHtml : String;
+	
+	function get_notesHtml () : String {
+		return _notesHtml;
+	}
+	function set_notesHtml(value : String) : String {
+		return _notesHtml = value;
+	}
 
 	public function new(md:String,el:Element,slideId:Int)
 	{
@@ -21,7 +30,7 @@ class SlidrrView
 		var slideArr = slides[i].split('\n'+App.splitNote+'\n');	
 		var vo : BackgroundVO = stripBackground(slideArr[0]);
 		var slideHTML = Markdown.markdownToHtml(vo.markdown);
-		var noteHTML = (slideArr.length>1) ? Markdown.markdownToHtml(slideArr[1]) : '';
+		notesHtml = (slideArr.length>1) ? Markdown.markdownToHtml(slideArr[1]) : '' ;
 		
 		var container = Browser.document.createDivElement();
 		container.className = 'slidrr-flex';
@@ -32,7 +41,7 @@ class SlidrrView
 		
 		var container = Browser.document.createDivElement();
 		container.className = 'slidrr-flex';
-		container.innerHTML = slideHTML + '<!-- :: note :: \n' + noteHTML + '\n -->';
+		container.innerHTML = slideHTML + '<!-- :: note :: \n' + notesHtml + '\n -->';
 		
 		if(vo.url != ''){
 			div.className += ' slidrr-fullscreen glow';
@@ -55,10 +64,7 @@ class SlidrrView
 		// div2.className = ('mini-slide');
 		// div2.innerHTML = slideHTML + '<!-- :: note :: \n' + noteHTML + '\n -->';
 	
-		// var elSpeakrrNotes = Browser.document.getElementsByClassName("speaker-controls-notes")[0];
-		// if(elSpeakrrNotes != null && noteHTML != ''){
-		// 	elSpeakrrNotes.innerHTML = noteHTML;
-		// }
+
 	
 		// el.appendChild(flexContainer);
 	}

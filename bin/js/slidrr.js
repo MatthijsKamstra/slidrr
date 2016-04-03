@@ -153,7 +153,7 @@ Main.prototype = {
 		var _g2 = this._total;
 		while(_g1 < _g2) {
 			var i = _g1++;
-			new view_SlidrrView(md,flexContainer,i);
+			var slidrrview = new view_SlidrrView(md,flexContainer,i);
 			this.toggleVisibleSlide(i,false);
 		}
 		this.buildNav();
@@ -285,7 +285,7 @@ Main.prototype = {
 		}
 	}
 	,toggleHelp: function() {
-		haxe_Log.trace("toggleHelp",{ fileName : "Main.hx", lineNumber : 343, className : "Main", methodName : "toggleHelp"});
+		haxe_Log.trace("toggleHelp",{ fileName : "Main.hx", lineNumber : 350, className : "Main", methodName : "toggleHelp"});
 		var help = this._doc.getElementsByClassName("help")[0];
 		if(help.style.visibility == "visible") {
 			help.style.visibility = "hidden";
@@ -316,12 +316,12 @@ Main.prototype = {
 		}
 	}
 	,showSpeakerNotes: function() {
-		haxe_Log.trace("showSpeakerNotes",{ fileName : "Main.hx", lineNumber : 384, className : "Main", methodName : "showSpeakerNotes"});
+		haxe_Log.trace("showSpeakerNotes",{ fileName : "Main.hx", lineNumber : 391, className : "Main", methodName : "showSpeakerNotes"});
 		var html = "\n<!DOCTYPE html>\n<html lang=\"en\" id=\"slidrr-speakrr-notes\">\n  <head>\n    <meta charset=\"utf-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->\n\t\n    <meta name=\"description\" content=\"\">\n    <meta name=\"author\" content=\"\">\n    <link rel=\"icon\" href=\"favicon.ico\">\n\t\n\t<meta name=\"google\" value=\"notranslate\">\n\t\n\t<title>Slidrr :: speakrr-notes</title>\n\t\n\t<!-- Latest compiled and minified CSS -->\n\t<!--<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css\" integrity=\"sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7\" crossorigin=\"anonymous\">-->\n\t\n\t<!-- custom css -->\n\t<link rel=\"stylesheet\" href=\"css/slidrr.css\" >\n\t<link rel=\"stylesheet\" href=\"css/monokai-sublime-min.css\" >\n\n<script>\n//respond to events\nwindow.addEventListener('message',function(event) {\n\tconsole.log('message received:  ' + event.data,event);\n\tevent.source.postMessage('holla back youngin!',event.origin);\n},false);\n</script>\n\n</head>\n<body>\n\t\n\t<div id=\"current-slide\"></div>\n\t<div id=\"upcoming-slide\"></div>\n\t<div id=\"speaker-controls\">\n\t\t<div class=\"speaker-controls-time\">\n\t\t\t<h4 class=\"label\">Time <span class=\"reset-button\">Click to Reset</span></h4>\n\t\t\t<div class=\"clock\"></div>\n\t\t\t<div class=\"timer\"></div>\n\t\t\t<div class=\"countdown\"></div>\n\t\t</div>\n\t\t<div class=\"speaker-controls-notes\">\n\t\t\t<h4 class=\"label\">Notes</h4>\n\t\t\t<div class=\"value\"></div>\n\t\t</div>\n\t</div>\n\t\t\n\t\t\n\t<!-- Code generated using Haxe -->\n\t<script type=\"text/javascript\" src=\"js/highlight.pack.js\"></script>\n\t<script type=\"text/javascript\" src=\"js/slidrr.js\"></script>\n</body>\n</html>\n";
 		var notesPopup = this._win.open("","Notes::","width=1100,height=700");
 		notesPopup.document.write(html);
 		this._win.addEventListener("message",function(event) {
-			haxe_Log.trace("received response: ",{ fileName : "Main.hx", lineNumber : 459, className : "Main", methodName : "showSpeakerNotes", customParams : [event.data]});
+			haxe_Log.trace("received response: ",{ fileName : "Main.hx", lineNumber : 466, className : "Main", methodName : "showSpeakerNotes", customParams : [event.data]});
 		},false);
 	}
 	,onKeyHandler: function(e) {
@@ -362,10 +362,10 @@ Main.prototype = {
 	,onClickHandler: function(e) {
 		var temp = e.currentTarget;
 		if(temp.className.indexOf("left") != -1) {
-			haxe_Log.trace("left",{ fileName : "Main.hx", lineNumber : 495, className : "Main", methodName : "onClickHandler"});
+			haxe_Log.trace("left",{ fileName : "Main.hx", lineNumber : 502, className : "Main", methodName : "onClickHandler"});
 			this.move(-1);
 		} else {
-			haxe_Log.trace("right",{ fileName : "Main.hx", lineNumber : 498, className : "Main", methodName : "onClickHandler"});
+			haxe_Log.trace("right",{ fileName : "Main.hx", lineNumber : 505, className : "Main", methodName : "onClickHandler"});
 			this.move(1);
 		}
 	}
@@ -756,6 +756,9 @@ js_Boot.__instanceof = function(o,cl) {
 		if(cl == Enum && o.__ename__ != null) return true;
 		return o.__enum__ == cl;
 	}
+};
+js_Boot.__cast = function(o,t) {
+	if(js_Boot.__instanceof(o,t)) return o; else throw new js__$Boot_HaxeError("Cannot cast " + Std.string(o) + " to " + Std.string(t));
 };
 js_Boot.__nativeClassName = function(o) {
 	var name = js_Boot.__toStr.call(o).slice(8,-1);
@@ -1681,8 +1684,7 @@ var view_SlidrrView = function(md,el,slideId) {
 	var slideArr = slides[i].split("\n" + model_App.splitNote + "\n");
 	var vo = this.stripBackground(slideArr[0]);
 	var slideHTML = Markdown.markdownToHtml(vo.markdown);
-	var noteHTML;
-	if(slideArr.length > 1) noteHTML = Markdown.markdownToHtml(slideArr[1]); else noteHTML = "";
+	this.set_notesHtml(slideArr.length > 1?Markdown.markdownToHtml(slideArr[1]):"");
 	var container;
 	var _this = window.document;
 	container = _this.createElement("div");
@@ -1696,7 +1698,7 @@ var view_SlidrrView = function(md,el,slideId) {
 	var _this2 = window.document;
 	container1 = _this2.createElement("div");
 	container1.className = "slidrr-flex";
-	container1.innerHTML = slideHTML + "<!-- :: note :: \n" + noteHTML + "\n -->";
+	container1.innerHTML = slideHTML + "<!-- :: note :: \n" + this.get_notesHtml() + "\n -->";
 	if(vo.url != "") {
 		div.className += " slidrr-fullscreen glow";
 		div.style.backgroundImage = "url(" + vo.url + ")";
@@ -1712,7 +1714,13 @@ var view_SlidrrView = function(md,el,slideId) {
 };
 view_SlidrrView.__name__ = true;
 view_SlidrrView.prototype = {
-	stripBackground: function(md) {
+	get_notesHtml: function() {
+		return this._notesHtml;
+	}
+	,set_notesHtml: function(value) {
+		return this._notesHtml = value;
+	}
+	,stripBackground: function(md) {
 		var _url = "";
 		var _color = "";
 		var _markdown = md;
@@ -1746,16 +1754,27 @@ view_SlidrrView.prototype = {
 var view_SpeakrrNotesView = function(md) {
 	this.timer = new haxe_Timer(1000);
 	this._doc = window.document;
+	window.console.info("Speakrr-Notes");
+	this.slideCurrent = js_Boot.__cast(this._doc.getElementById("current-slide") , HTMLDivElement);
+	this.slideNext = js_Boot.__cast(this._doc.getElementById("upcoming-slide") , HTMLDivElement);
+	window.console.info(this.slideCurrent.clientWidth);
+	window.console.info(this.slideCurrent.clientHeight);
 	this.buildNotes(md);
 };
 view_SpeakrrNotesView.__name__ = true;
 view_SpeakrrNotesView.prototype = {
 	buildNotes: function(md) {
 		var _g = this;
-		var slideCurrent = this._doc.getElementById("current-slide");
-		var slideNext = this._doc.getElementById("upcoming-slide");
-		new view_SlidrrView(md,slideCurrent,5);
-		new view_SlidrrView(md,slideNext,6);
+		var slideCurrentContainer = this._doc.createElement("div");
+		slideCurrentContainer.className = "slidrr-container";
+		this.slideCurrent.appendChild(slideCurrentContainer);
+		var slideNextContainer = this._doc.createElement("div");
+		slideNextContainer.className = "slidrr-container";
+		this.slideNext.appendChild(slideNextContainer);
+		var currentSlide = new view_SlidrrView(md,slideCurrentContainer,5);
+		var nextSlide = new view_SlidrrView(md,slideNextContainer,4);
+		var elSpeakrrNotes = window.document.getElementsByClassName("speaker-controls-notes")[0];
+		if(elSpeakrrNotes != null && currentSlide.get_notesHtml() != "") elSpeakrrNotes.innerHTML = currentSlide.get_notesHtml();
 		hljs.initHighlightingOnLoad();
 		this.startTime = new Date();
 		this.timer.run = function() {

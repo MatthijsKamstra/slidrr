@@ -68,12 +68,19 @@ class Main {
 		readTextFile(App.markdown);
 	}
 	
-
+	/**
+	 * build the speakrr-notes (press `s`) 
+	 * @param		content (String) of the markdown file
+	 */
 	function buildNotes (md:String) : Void
 	{
 		var speakrrNotes = new view.SpeakrrNotesView(md);
 	}
 
+	/**
+	 * build the presentation (default) 
+	 * @param		content (String) of the markdown file
+	 */
 	function buildPresentation (md:String) : Void
 	{
 		var flexContainer = _doc.createDivElement();
@@ -84,7 +91,7 @@ class Main {
 		_total = slides.length;
 		for ( i in 0 ... _total ) 
 		{
-			new view.SlidrrView(md,flexContainer,i);
+			var slidrrview = new view.SlidrrView(md,flexContainer,i);
 			toggleVisibleSlide(i, false);
 		}
 		

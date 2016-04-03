@@ -15,8 +15,19 @@ class SpeakrrNotesView
 	private var timer = new haxe.Timer(1000); // 1000ms delay
 	private var startTime : Date;
 	
+	var slideCurrent : DivElement;
+	var slideNext : DivElement;
+	
 	public function new(md:String) 
 	{
+		Browser.console.info('Speakrr-Notes');	
+			
+		slideCurrent = cast (_doc.getElementById('current-slide'), DivElement);
+		slideNext = cast (_doc.getElementById('upcoming-slide'), DivElement);
+		
+		Browser.console.info(slideCurrent.clientWidth);
+		Browser.console.info(slideCurrent.clientHeight);
+		
 		buildNotes(md);
 	}
 
@@ -27,14 +38,23 @@ class SpeakrrNotesView
 	*/
 	function buildNotes (md:String)
 	{
-		// Browser.console.info('notes');		
-		var slideCurrent = _doc.getElementById('current-slide');
-		var slideNext = _doc.getElementById('upcoming-slide');
-		
-		new view.SlidrrView(md,slideCurrent,5);
-		new view.SlidrrView(md,slideNext,6);
+		var slideCurrentContainer = _doc.createDivElement();
+		slideCurrentContainer.className = 'slidrr-container';
+		slideCurrent.appendChild(slideCurrentContainer);
 
-		// [mck] start highlight plugin? // doesn't work yet
+		var slideNextContainer = _doc.createDivElement();
+		slideNextContainer.className = 'slidrr-container';
+		slideNext.appendChild(slideNextContainer);
+
+		var currentSlide = new view.SlidrrView(md,slideCurrentContainer,5);
+		var nextSlide = new view.SlidrrView(md,slideNextContainer,4);
+
+		var elSpeakrrNotes = Browser.document.getElementsByClassName("speaker-controls-notes")[0];
+		if(elSpeakrrNotes != null && currentSlide.notesHtml != ''){
+			elSpeakrrNotes.innerHTML = currentSlide.notesHtml;
+		}		
+
+		// [mck] start highlight plugin? // doesn't work yet in original mode (opening with `s`)...
 		untyped hljs.initHighlightingOnLoad();
 		
 		startTime = Date.now();

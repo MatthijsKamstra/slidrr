@@ -347,13 +347,13 @@ a:hover {
 	width: 48%;
 	margin: 5px;
 }
-#current-slide .slidrr{
+#current-slide .slidrr-container{
 	transform-origin: left top;
 	-ms-transform: scale(0.5, 0.5); /* IE 9 */
     -webkit-transform: scale(0.5, 0.5); /* Safari */
     transform: scale(0.5, 0.5);
 }
-#upcoming-slide .slidrr{
+#upcoming-slide .slidrr-container{
 	transform-origin: left top;
 	-ms-transform: scale(0.5, 0.5); /* IE 9 */
     -webkit-transform: scale(0.5, 0.5); /* Safari */
