@@ -340,39 +340,33 @@ a:hover {
 	width: 1024px;
 	height: 768px;
 }
-
 #current-slide ,#upcoming-slide {
 	overflow: hidden;
 	background-color: black;
-	width: 48%;
-	margin: 5px;
 }
-#current-slide .slidrr-container{
+#current-slide .slidrr-container, #upcoming-slide .slidrr-container{
 	transform-origin: left top;
-	-ms-transform: scale(0.5, 0.5); /* IE 9 */
-    -webkit-transform: scale(0.5, 0.5); /* Safari */
-    transform: scale(0.5, 0.5);
-}
-#upcoming-slide .slidrr-container{
-	transform-origin: left top;
-	-ms-transform: scale(0.5, 0.5); /* IE 9 */
-    -webkit-transform: scale(0.5, 0.5); /* Safari */
-    transform: scale(0.5, 0.5);
 }
 #current-slide{
-	height: 50%;
 	float: left;
 }
 #upcoming-slide{
-	height: 45%;
 	float: right;
 }
  #speaker-controls{
-	clear: both;
 	 width: 100%;
 	 background-color: red;
  }
+ .time-text{
+	 width: 200px;
+     display: inline-block;
+ }
+ .time{
+	 font-size: 20px;
+	 font-family: monospace;
+ }
 .speaker-controls-notes{
+	clear: both;
 	 width: 100%;
 	 height: 100%;
 	 background-color: green;

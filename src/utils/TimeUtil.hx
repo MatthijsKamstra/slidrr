@@ -15,9 +15,24 @@ class TimeUtil{
 		return result;
 	}
 
+	public static function readableDate(date:Date):String
+	{
+		return '${Std.string(date.getHours()).lpad('0',2)}:${Std.string(date.getMinutes()).lpad('0',2)}:${Std.string(date.getSeconds()+1).lpad('0',2)}';
+	}
+
 	public static function countdown(minutes:Int,mlseconds:Int) : String
 	{
 		var totalSec : Int =  Math.round( minutes * 60);
+		var progressSec  =  Math.round( mlseconds/1000 );
+		var temp = totalSec - progressSec;
+		
+		if (temp <= 0) temp = 0;
+		return TimeUtil.readableTime(temp*1000);
+	}
+
+	public static function countdownSeconds(seconds:Int,mlseconds:Int) : String
+	{
+		var totalSec : Int =  Math.round( seconds);
 		var progressSec  =  Math.round( mlseconds/1000 );
 		var temp = totalSec - progressSec;
 		

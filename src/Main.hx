@@ -29,17 +29,27 @@ class Main {
 	
 	public function new () 
 	{
-		// [mck] slidrr-speakrr-notes
-		// DOM is generated, so no need for check
+		/**
+		 * test file
+		 */
 		if(_doc.getElementById('slidrr-speakrr-notes') != null){
-			// Browser.console.debug('check for notes');
+			Browser.console.debug('** Test speakrr notes ** ');
 			isSpeakrrNotes = true;
-			// init();
 		}
-		// [mck] DOM is ready (slidrr-presentation)
-		_doc.addEventListener("DOMContentLoaded", function(event) {				
+		/**
+		 * generated from presentation, for some reason there is no dom ready 
+		 */
+		if(_doc.getElementById('slidrr-speakrr-notes-gen') != null){
+			Browser.console.info('** Generated speakrr notes ** ');
+			isSpeakrrNotes = true;
 			init();
-			Browser.console.debug('dom');
+		}
+		/**
+		 * DOM is ready (slidrr-presentation) 
+		 */
+		_doc.addEventListener("DOMContentLoaded", function(event) {				
+			Browser.console.info('** DOM ready **');
+			init();
 		});
 		
 	}
@@ -389,11 +399,14 @@ class Main {
 
 	function showSpeakerNotes () : Void {
 		trace('showSpeakerNotes');
+		
+		// [mck] TODO :: check if window is open
+		
 		// var notesPopup = _win.open( 'notes.html', 'Notes', 'width=1100,height=700' );
 		
 		var html  = '
 <!DOCTYPE html>
-<html lang="en" id="slidrr-speakrr-notes">
+<html lang="en" id="slidrr-speakrr-notes-gen">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -406,7 +419,7 @@ class Main {
 	
 	<meta name="google" value="notranslate">
 	
-	<title>Slidrr :: speakrr-notes</title>
+	<title>Slidrr :: Speakrr-Notes</title>
 	
 	<!-- Latest compiled and minified CSS -->
 	<!--<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">-->
@@ -500,7 +513,7 @@ window.addEventListener(\'message\',function(event) {
 		var temp : DivElement = cast e.currentTarget;
 		if(temp.className.indexOf('left') != -1){
 			trace('left');
-			move(-1);
+			move(-1); 
 		} else {
 			trace('right');
 			move(1);

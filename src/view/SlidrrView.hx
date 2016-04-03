@@ -18,6 +18,16 @@ class SlidrrView
 	function set_notesHtml(value : String) : String {
 		return _notesHtml = value;
 	}
+	
+	public var totalSlides ( get_totalSlides , set_totalSlides ) : Int;
+	private var _totalSlides : Int;
+	
+	function get_totalSlides () : Int {
+		return _totalSlides;
+	}
+	function set_totalSlides(value : Int) : Int {
+		return _totalSlides = value;
+	}
 
 	public function new(md:String,el:Element,slideId:Int)
 	{
@@ -25,6 +35,7 @@ class SlidrrView
 		// flexContainer.className = 'slidrr-container';
 		
 		var slides : Array<String> = md.split('\n'+App.spliteSlide+'\n');
+		totalSlides = slides.length;
 		var i = slideId;
 
 		var slideArr = slides[i].split('\n'+App.splitNote+'\n');	
