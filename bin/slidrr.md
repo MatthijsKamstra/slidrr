@@ -14,7 +14,7 @@ done in plain css, js and html
 
 ### A textual example
 
-Content can be written in **Markdown!**  
+Content can be written in **Markdown!**
 Just follow the `rules` defined [here](https://daringfireball.net/projects/markdown/)
 
 This will be in a separate paragraph, **bold** and _italic_
@@ -44,7 +44,7 @@ No need for multiple templates!
 
 ## code blocks
 
-`AaGgTtIiJj123!`  
+`AaGgTtIiJj123!`
 inline `code` or code-block:
 
 ```
@@ -96,19 +96,27 @@ Notes that show **up**
 
 --
 
-![#112A06](https://i.ytimg.com/vi/BpbJ0lHFLLw/maxresdefault.jpg)
+![#112A06](https://a2ua.com/mecha/mecha-005.jpg)
 
 # full-screen image
 
 Start your slide with an image and then write text (if needed)
 
-__tip: use hex value in the alt text to change the background color__
+__tip: use hex value in the alt text to change the background color AND the text color (black or white)__
+
+--
+
+![#FBFBFB](https://a2ua.com/mecha/mecha-004.jpg?)
+
+# full-screen image with constrain
+
+Same as previous slide but add an `?` at the end of the image-url
 
 --
 
 # And the default way to show an image
 
-![](http://themodernmage.com/wp-content/uploads/2013/08/Mecha_in_blue_by_LordHannu-660x350.jpg)
+![](http://img04.deviantart.net/9fc9/i/2015/110/4/9/commission___mecha_harmor_by_tomycase-d6hmmtv.png)
 
 --
 
@@ -117,7 +125,7 @@ __tip: use hex value in the alt text to change the background color__
 
 #Background color dark
 
-Change the background color `#2c3e50`   
+Change the background color `#2c3e50`
 without an image
 Text with highest contrast (white)
 
@@ -127,7 +135,7 @@ Text with highest contrast (white)
 
 #Background color light
 
-Change the background color `#bdc3c7`  
+Change the background color `#bdc3c7`
 without an image
 Text with highest contrast (black)
 
@@ -138,7 +146,7 @@ Text with highest contrast (black)
 
 # have fun!
 
-Read more about this project at:  
+Read more about this project at:
 <https://github.com/MatthijsKamstra/slidrr>
 
 

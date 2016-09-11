@@ -6,6 +6,17 @@
 - http://practicaltypography.com/system-fonts.html
 
 
+
+- bullit list animated
+- host files on dropbox
+- presentation mode
+- all in on file (html/min-css/min-js) via grunt?
+- images as big as possible but not full screen
+- split is very precise : `--` works `-- ` doesn't
+- first thing is a image
+	- show images fullscreen `cover` or `contain`
+	- add `?` to the end of the url and it is `contain`
+
 # FIX
 
 ```
