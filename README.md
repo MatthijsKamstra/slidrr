@@ -35,10 +35,10 @@ I concider the additions simple and not intrucive.
 To add a slide: `--` (2 dashes) _but you can changes that into something that you find easier to use_
 To add speaker notes: `??` (2 questionmarks) _but you can changes that into something that you find easier to use_
 
-To create a fullscreen image: use the default way to create an image `![](path/to/image)` and it should be the first markdown you write after creating a slide.
-To create a fullscreen image __but__ don't crop the image: use the default way to create an image `![](path/to/image?)` and it should be the first markdown you write after creating a slide. Notice the `?` at the end of the image, this will make sure the image is as big as possible but won't be cropped.
-To create a slide with an different background color: it works the same as an fullscreen image, but you add the hex value to the alt text of the image and leave the image source empty `![#ff3333]()`
-This works also with fullscreen images with text over it, it will help to change the color (use black background, get white text and vice versa)
+To create a fullscreen image: use the default way to create an image `![](path/to/image)` and it should be the first markdown you write after creating a slide.  
+To create a fullscreen image __but__ don't crop the image: use the default way to create an image `![](path/to/image?)` and it should be the first markdown you write after creating a slide. Notice the `?` at the end of the image, this will make sure the image is as big as possible but won't be cropped.  
+To create a slide with an different background color: it works the same as an fullscreen image, but you add the hex value to the alt text of the image and leave the image source empty `![#ff3333]()`  
+This works also with fullscreen images with text over it, it will help to change the color (use black background, get white text and vice versa)  
 
 
 **Summary**
