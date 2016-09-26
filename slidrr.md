@@ -146,7 +146,7 @@ Text with highest contrast (black)
 
 # have fun!
 
-Read more about this project at:
+Read more about this project at:  
 <https://github.com/MatthijsKamstra/slidrr>
 
 
