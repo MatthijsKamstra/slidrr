@@ -96,7 +96,7 @@ Notes that show **up**
 
 --
 
-![#112A06](https://a2ua.com/mecha/mecha-005.jpg)
+![#112A06](img/sizes_landscape.png)
 
 # full-screen image
 
@@ -106,7 +106,7 @@ __tip: use hex value in the alt text to change the background color AND the text
 
 --
 
-![#FBFBFB](https://a2ua.com/mecha/mecha-004.jpg?)
+![#EC1E24](img/sizes_portrait.png?)
 
 # full-screen image with constrain
 
@@ -116,7 +116,7 @@ Same as previous slide but add an `?` at the end of the image-url
 
 # And the default way to show an image
 
-![](http://img04.deviantart.net/9fc9/i/2015/110/4/9/commission___mecha_harmor_by_tomycase-d6hmmtv.png)
+![](img/sizes_example.png)
 
 --
 

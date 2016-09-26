@@ -2,9 +2,9 @@
 
 ![](bin/img/slidrr.png)
 
-Entering the world of **presentations** you have a lot of tools to you disposal.
+Entering the world of **presentations** you have a lot of tools to your disposal.
 The most popular must be Powerpoint (windows) and Keynote (mac).
- 
+
 Both are awesome but will cost you money and generate [lock-in](https://en.wikipedia.org/wiki/Vendor_lock-in).
 These tools are popular with **non**-developers.
 
@@ -14,7 +14,7 @@ You can share your presentation online (github or own website).
 Modify the presentation with tools you already use.
 And if you want: version controle.
 
-If you combine html with easy writing with [Markdown](https://daringfireball.net/projects/markdown/) you focus on writing and getting the message across.  
+If you combine html with easy writing with [Markdown](https://daringfireball.net/projects/markdown/) you focus on writing and getting the message across.
 
 There are enough tools that work like that (see previously mentioned html tools), but I think I can do better!
 
@@ -30,13 +30,16 @@ Till it's finished, you should consider this an experiment / a WIP repos.
 
 To use standard Markdown for presentations, I need to add some extra "rules" to Markdown.
 They shouldn't be to difficult to learn but they will show up in a standard Markdown editor (like MacDown) because they are not part of Markdown.
-I concider the additions simple and not intrucive. 
+I concider the additions simple and not intrucive.
 
-To add a slide: `--` (2 dashes) _but you can changes that into something that you find easier to use_  
-To add speaker notes: `??` (2 questionmarks) _but you can changes that into something that you find easier to use_  
+To add a slide: `--` (2 dashes) _but you can changes that into something that you find easier to use_
+To add speaker notes: `??` (2 questionmarks) _but you can changes that into something that you find easier to use_
 
-To create a fullscreen image: use the default way to create an image `![](path/to/image)` and it should be the first markdown you write after creating a slide.  
+To create a fullscreen image: use the default way to create an image `![](path/to/image)` and it should be the first markdown you write after creating a slide.
+To create a fullscreen image __but__ don't crop the image: use the default way to create an image `![](path/to/image?)` and it should be the first markdown you write after creating a slide. Notice the `?` at the end of the image, this will make sure the image is as big as possible but won't be cropped.
 To create a slide with an different background color: it works the same as an fullscreen image, but you add the hex value to the alt text of the image and leave the image source empty `![#ff3333]()`
+This works also with fullscreen images with text over it, it will help to change the color (use black background, get white text and vice versa)
+
 
 **Summary**
 
@@ -46,7 +49,7 @@ first slide
 second slide with speaker notes
 ??
 something important
--- 
+--
 ![](path/to/image)
 fullscreen image
 --
@@ -60,8 +63,8 @@ You need help with the basics of Markdown, check out this [cheatsheet](markdown.
 ## Features in Slidrr
 
 1. Write your presentation with [Markdown](#markdown)
-2. Split into chapters using `--` 
-3. Add speaker-notes with `??` 
+2. Split into chapters using `--`
+3. Add speaker-notes with `??`
 10. Keyboard [navigation](#navigation)
 11. Default changes via quarystrings `?md=haxe.md&css=foobar.css&author=Matthijs Kamstra aka [mck]&time=45`
 	- md
@@ -96,15 +99,15 @@ You need help with the basics of Markdown, check out this [cheatsheet](markdown.
 
 4. use config file (first work with default settings)
 5. simple but nice design
-	- nice transition 	
+	- nice transition
 	- default styling
 	- code highlighting
 	- ..
 6. ready for offline use
 7. clean, simple, one file
-8. default styling / no web-fonts (see #6) 
+8. default styling / no web-fonts (see #6)
 9. simple styling (see #6)
-12. Speaker-note help: 
+12. Speaker-note help:
 	- time
 	- total time
 	- current slide
@@ -119,12 +122,12 @@ Slidrr uses keyboard navigation
 | action | shortcut |
 | --- | --- |
 | forward | `cursor right` , `.` , `space` |
-| reverse | `cursor left` , `,` | 
-| toggle fullscreen | `f` | 
-| toggle help | `h` | 
-| toggle focus screen | `b` | 
-| reverse fullscreen | `esc` | 
-| speaker notes | `s` | 
+| reverse | `cursor left` , `,` |
+| toggle fullscreen | `f` |
+| toggle help | `h` |
+| toggle focus screen | `b` |
+| reverse fullscreen | `esc` |
+| speaker notes | `s` |
 
 
 # Custom css
@@ -141,17 +144,25 @@ http://localhost:2000/?css=css/test.css#/13
 
 # Fullscreen images
 
-Create a slide with fullscreen images 
+Create a slide with fullscreen images
 ```
 ![](path/to/image)
 fullscreen image
 ```
 _first the image then text_
 
+Create a slide with a image as-big-as-possible without cropping
+```
+![](path/to/image?)
+fullscreen image without cropping
+```
+_first the image then text_
+
+
 
 # Change background color
 
-Create a slide with a different colored background 
+Create a slide with a different colored background
 ```
 ![#ff3333]()
 background color is red
@@ -189,9 +200,9 @@ You know what to do if you don't agree!
 
 # Build
 
-You need Haxe!
+You need [Haxe](http://haxe.org/download/)!
 
-install
+Install via haxelib
 
 `haxelib install markdown`
 
@@ -220,6 +231,6 @@ http://localhost:2000/?md=slidrrtest.md&author=mck
 
 # Markdown
 
-[Markdown](https://daringfireball.net/projects/markdown/), created by John Gruber, author of the Daring Fireball blog. 
+[Markdown](https://daringfireball.net/projects/markdown/), created by John Gruber, author of the Daring Fireball blog.
 The original source of Markdown can be found at Daring Fireball - Markdown.
 
