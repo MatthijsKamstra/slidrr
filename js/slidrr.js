@@ -2194,3 +2194,5 @@ model_App.css = "";
 model_App.time = 10;
 Main.main();
 })(typeof window != "undefined" ? window : typeof global != "undefined" ? global : typeof self != "undefined" ? self : this);
+
+//# sourceMappingURL=slidrr.js.map
