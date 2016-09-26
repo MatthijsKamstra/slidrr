@@ -15,12 +15,14 @@ body,html{width:100%;height:100%;overflow:hidden}
 body{line-height:1;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-size:100%;color:#fff;background:#222}
 
 .dark{color:#000}
+.glow {text-shadow: 0 0 40px #000000}
+.dark.glow  {text-shadow: 0 0 40px #FFFFFF}
 
 /*********************************************
  * HEADERS
  *********************************************/
-h1,h2,h3,h4,h5,h6{margin:0 0 20px;font-family:"Source Sans Pro",'Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:600;line-height:1.2;letter-spacing:normal;text-transform:uppercase;text-shadow:none;word-wrap:break-word}
-h1{font-size:2.5em;text-shadow:none}
+h1,h2,h3,h4,h5,h6{margin:0 0 20px;font-family:"Source Sans Pro",'Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:600;line-height:1.2;letter-spacing:normal;text-transform:uppercase;word-wrap:break-word}
+h1{font-size:2.5em}
 h2{font-size:1.6em}
 h3{font-size:1.3em}
 h4{font-size:1em}
@@ -161,7 +163,7 @@ a:hover {
  * slidrr
  *********************************************/
 
-.slidrr-container 
+.slidrr-container
 {
 	width: 100%;
 	height: 100%;
@@ -171,11 +173,11 @@ a:hover {
 .slidrr {
 	width: 100%;
 	height: 100%;
-	
+
 	font-size: 38px;
 	font-weight: normal;
 	text-align: center;
-	
+
 	display: -ms-flexbox;
 	display: -webkit-flex;
 	display: flex;
@@ -184,12 +186,12 @@ a:hover {
 	-webkit-align-items: center;
 	-webkit-box-align: center;
 	align-items: center;
-	
+
 	-webkit-transition: 1s ease-out;
     -moz-transition: 1s ease-out;
     -o-transition: 1s ease-out;
     transition: 1s ease-out;
-	
+
 }
 
 .slidrr-flex{
@@ -198,7 +200,7 @@ a:hover {
 }
 
 .slidrr-fullscreen {
-	background: url('http://chantclaire.org/wp-content/uploads/2016/02/dc534786327218551b8580f82f79dee2.jpeg') no-repeat center center fixed; 
+	background: url('http://chantclaire.org/wp-content/uploads/2016/02/dc534786327218551b8580f82f79dee2.jpeg') no-repeat center center fixed;
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
@@ -207,6 +209,12 @@ a:hover {
 	height: 100%;
 }
 
+.slidrr-fullscreen-contain {
+  -webkit-background-size: contain;
+  -moz-background-size: contain;
+  -o-background-size: contain;
+  background-size: contain;
+}
 
 -webkit-full-screen{width:100%;height:100%}
 
@@ -297,3 +305,75 @@ a:hover {
 
 
 
+.nav {
+    position: absolute;
+    top: 0;
+    color: black;
+    margin: auto;
+    width: 500px;
+    height: 100%;
+    background: white;
+    visibility: hidden;
+    opacity: 0;
+    z-index: 100;
+    -webkit-transition: all 1s ease;
+    transition: all 1s ease;
+	padding: 10px;
+}
+
+.mini-slide {
+	position: relative;
+	border: 10px solid black;
+	background-color: red;
+	width: 1024px;
+	height: 768px;
+
+	transform-origin: left top;
+	-ms-transform: scale(0.1, 0.1); /* IE 9 */
+    -webkit-transform: scale(0.1, 0.1); /* Safari */
+    transform: scale(0.1, 0.1);
+}
+
+
+/*
+ * speakrr-notes
+ */
+
+#slidrr-speakrr-notes body{
+	background-color: gray;
+}
+#slidrr-speakrr-notes .slidrr-container {
+	width: 1024px;
+	height: 768px;
+}
+#current-slide ,#upcoming-slide {
+	overflow: hidden;
+	background-color: black;
+}
+#current-slide .slidrr-container, #upcoming-slide .slidrr-container{
+	transform-origin: left top;
+}
+#current-slide{
+	float: left;
+}
+#upcoming-slide{
+	float: right;
+}
+ #speaker-controls{
+	 width: 100%;
+	 background-color: red;
+ }
+ .time-text{
+	 width: 200px;
+     display: inline-block;
+ }
+ .time{
+	 font-size: 20px;
+	 font-family: monospace;
+ }
+.speaker-controls-notes{
+	clear: both;
+	 width: 100%;
+	 height: 100%;
+	 background-color: green;
+ }

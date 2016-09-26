@@ -14,7 +14,7 @@ done in plain css, js and html
 
 ### A textual example
 
-Content can be written in **Markdown!**  
+Content can be written in **Markdown!**
 Just follow the `rules` defined [here](https://daringfireball.net/projects/markdown/)
 
 This will be in a separate paragraph, **bold** and _italic_
@@ -23,8 +23,8 @@ This will be in a separate paragraph, **bold** and _italic_
 
 ### A list of things
 
-* Item 1
-* Item B
+* [Change the css styling](?css=css/test.css#/2)
+* [Revert to default css](?#/2)
 * Item gamma
 
 No need for multiple templates!
@@ -44,7 +44,7 @@ No need for multiple templates!
 
 ## code blocks
 
-`AaGgTtIiJj123!`  
+`AaGgTtIiJj123!`
 inline `code` or code-block:
 
 ```
@@ -96,19 +96,27 @@ Notes that show **up**
 
 --
 
-![#112A06](https://i.ytimg.com/vi/BpbJ0lHFLLw/maxresdefault.jpg)
+![#112A06](img/sizes_landscape.png)
 
 # full-screen image
 
 Start your slide with an image and then write text (if needed)
 
-__tip: use hex value in the alt text to change the background color__
+__tip: use hex value in the alt text to change the background color AND the text color (black or white)__
+
+--
+
+![#EC1E24](img/sizes_portrait.png?)
+
+# full-screen image with constrain
+
+Same as previous slide but add an `?` at the end of the image-url
 
 --
 
 # And the default way to show an image
 
-![](http://themodernmage.com/wp-content/uploads/2013/08/Mecha_in_blue_by_LordHannu-660x350.jpg)
+![](img/sizes_example.png)
 
 --
 
@@ -117,7 +125,7 @@ __tip: use hex value in the alt text to change the background color__
 
 #Background color dark
 
-Change the background color `#2c3e50`   
+Change the background color `#2c3e50`
 without an image
 Text with highest contrast (white)
 
@@ -127,7 +135,7 @@ Text with highest contrast (white)
 
 #Background color light
 
-Change the background color `#bdc3c7`  
+Change the background color `#bdc3c7`
 without an image
 Text with highest contrast (black)
 
