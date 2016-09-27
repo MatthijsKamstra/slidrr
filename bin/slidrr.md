@@ -10,6 +10,10 @@ _(other headers are just to small for presentations)_
 
 done in plain css, js and html
 
+??
+
+Testing notes
+
 --
 
 ### A textual example
@@ -18,6 +22,10 @@ Content can be written in **Markdown!**
 Just follow the `rules` defined [here](https://daringfireball.net/projects/markdown/)
 
 This will be in a separate paragraph, **bold** and _italic_
+
+??
+
+More notes
 
 --
 
@@ -32,6 +40,10 @@ No need for multiple templates!
 1. just
 2. lists
 4. are fun
+
+??
+
+still more!
 
 --
 

@@ -37,6 +37,26 @@ class SpeakrrNotesView
 		_win.onresize = function (){
 			onResizeHandler();
 		}
+
+		_win.onmessage = function(event) {
+			var curId = Std.parseInt(event.data.split(':')[1]);
+			trace("should change slide to " + curId);
+			var _u = _doc.URL.split('#');
+			_doc.location.href = _u[0] + "#/" + curId;
+			buildNotes(md);
+		};
+	}
+
+	/**
+	 * Clears the node containing
+	 * current slide and
+	 * upcoming slide.
+	 */
+	private function clearNodes():Void
+	{
+		if (slideCurrentContainer == null || slideNextContainer == null) return;
+		slideCurrent.removeChild(slideCurrentContainer);
+	    slideNext.removeChild(slideNextContainer);
 	}
 
 	/**
@@ -46,16 +66,20 @@ class SpeakrrNotesView
 	*/
 	function buildNotes (md:String)
 	{
+		clearNodes();
 		slideCurrentContainer = _doc.createDivElement();
 		slideCurrentContainer.className = 'slidrr-container current-slidrr';
 		slideCurrent.appendChild(slideCurrentContainer);
-
+		
 		slideNextContainer = _doc.createDivElement();
 		slideNextContainer.className = 'slidrr-container next-slidrr';
 		slideNext.appendChild(slideNextContainer);
 
-		var currentSlide = new view.SlidrrView(md,slideCurrentContainer,5);
-		var nextSlide = new view.SlidrrView(md,slideNextContainer,4);
+		var curId = getSlideId();
+		var nextId = curId + 1;
+		if(curId == totalSlides) nextId = 0;
+		var currentSlide = new view.SlidrrView(md,slideCurrentContainer,curId);
+		var nextSlide = new view.SlidrrView(md,slideNextContainer,nextId);
 		totalSlides = nextSlide.totalSlides;
 
 		var elSpeakrrNotes = Browser.document.getElementsByClassName("speaker-controls-notes")[0];
@@ -69,6 +93,12 @@ class SpeakrrNotesView
 		restartSlideTimer();
 		startTime = Date.now();
 		timer.run = function () {setClock();};
+	}
+
+	function getSlideId():Int {
+		var hash = _win.location.hash;
+		var id = Std.parseInt(hash.split('/')[1]);
+		return id;
 	}
 	
 	function restartSlideTimer() : Void
@@ -86,8 +116,8 @@ class SpeakrrNotesView
 		var timer = _doc.getElementsByClassName('timer')[0];
 		var clock = _doc.getElementsByClassName('clock')[0];
 		var countdown = _doc.getElementsByClassName('countdown')[0];
-		var slidecountdown = _doc.getElementsByClassName('slide-countdown')[0];
-		var temp = _doc.getElementsByClassName('temp2')[0];
+		// var slidecountdown = _doc.getElementsByClassName('slide-countdown')[0];
+		// var temp = _doc.getElementsByClassName('temp2')[0];
 		
 		// App.time in minutes 
 		var totalPresentationTimeSec : Int =  Math.round( App.time * 60);
@@ -100,8 +130,8 @@ class SpeakrrNotesView
 		timer.innerHTML = '<span class="time-text">during :</span><span class="time">${utils.TimeUtil.readableTime(progress)}</span>';
 		clock.innerHTML = '<span class="time-text">time:</span><span class="time">${utils.TimeUtil.readableDate(now)}</span>';
 		countdown.innerHTML = '<span class="time-text">countdown:</span><span class="time">${utils.TimeUtil.countdown(App.time,progress)}</span>';
-		slidecountdown.innerHTML = '<span class="time-text">slide countdown:</span><span class="time">${utils.TimeUtil.countdownSeconds(perSlideTimeSec,slideprogress)}</span>';
-		temp.innerHTML = 'total slides: ${totalSlides}, totaltime: ${App.time} minutes, time per slide: ${perSlideTimeSec} seconds';
+		// slidecountdown.innerHTML = '<span class="time-text">slide countdown:</span><span class="time">${utils.TimeUtil.countdownSeconds(perSlideTimeSec,slideprogress)}</span>';
+		// temp.innerHTML = 'total slides: ${totalSlides}, totaltime: ${App.time} minutes, time per slide: ${perSlideTimeSec} seconds';
 		
 	}
 	
