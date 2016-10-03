@@ -22,6 +22,9 @@ class Main {
 
 	private var isFullScreen : Bool = false;
 	private var isSpeakrrNotes : Bool = false;
+	private var shouldUpdateNotes : Bool = false;
+
+	private var notesPopup : Window;
 
 	private var queryArr : Array<String> = ['md', 'split', 'note', 'author', 'time'];
 
@@ -303,6 +306,10 @@ class Main {
 		if(_currentId >= (_total-1)) _currentId = (_total-1);
 		if(_currentId <= 0) _currentId = 0;
 
+		if (shouldUpdateNotes && notesPopup != null) {
+			notesPopup.postMessage("slide:"+_currentId, '*');
+		}
+
 		slideId(_currentId,true);
 	}
 
@@ -408,6 +415,7 @@ class Main {
 
 	function showSpeakerNotes () : Void {
 		trace('showSpeakerNotes');
+		shouldUpdateNotes = true;
 
 		// [mck] TODO :: check if window is open
 
@@ -437,14 +445,6 @@ class Main {
 	<link rel="stylesheet" href="css/slidrr.css" >
 	<link rel="stylesheet" href="css/monokai-sublime-min.css" >
 
-<script>
-//respond to events
-window.addEventListener(\'message\',function(event) {
-	console.log(\'message received:  \' + event.data,event);
-	event.source.postMessage(\'holla back youngin!\',event.origin);
-},false);
-</script>
-
 </head>
 <body>
 
@@ -471,8 +471,7 @@ window.addEventListener(\'message\',function(event) {
 </html>
 ';
 
-
-		var notesPopup = _win.open('', 'Notes::','width=1100,height=700');
+		notesPopup = _win.open('', 'Notes::','width=1100,height=700');
 		notesPopup.document.write(html);
 
 		// var timer = new haxe.Timer(6000); // 1000ms delay
