@@ -1,7 +1,11 @@
 package;
 
 import jQuery.*;
-import js.Browser;
+
+import js.Browser.document;
+import js.Browser.console;
+import js.Browser.window;
+
 import js.html.*;
 import js.html.XMLHttpRequest;
 
@@ -10,9 +14,6 @@ import model.App;
 using StringTools;
 
 class Main {
-
-	private var _doc = js.Browser.document;
-	private var _win = js.Browser.window;
 
 	private var _width : Int;
 	private var _height : Int;
@@ -35,25 +36,27 @@ class Main {
 		/**
 		 * test file
 		 */
-		if(_doc.getElementById('slidrr-speakrr-notes') != null){
-			Browser.console.debug('** Test speakrr notes ** ');
+		if(document.getElementById('slidrr-speakrr-notes') != null){
+			console.debug('** Test speakrr notes ** ');
 			isSpeakrrNotes = true;
 		}
 		/**
 		 * generated from presentation, for some reason there is no dom ready
 		 */
-		if(_doc.getElementById('slidrr-speakrr-notes-gen') != null){
-			Browser.console.info('** Generated speakrr notes ** ');
+		if(document.getElementById('slidrr-speakrr-notes-gen') != null){
+			console.info('** Generated speakrr notes ** ');
 			isSpeakrrNotes = true;
 			init();
 		}
 		/**
 		 * DOM is ready (slidrr-presentation)
 		 */
-		_doc.addEventListener("DOMContentLoaded", function(event) {
-			Browser.console.info('** DOM ready **');
+		document.addEventListener("DOMContentLoaded", function(event) {
+			console.info('** DOM ready **');
 			init();
 		});
+
+		trace('slidrrConfig: ' + js.Lib.global.slidrrConfig);
 
 	}
 
@@ -70,7 +73,7 @@ class Main {
 	function init ()
 	{
 		var map : Map<String, String> = new Map();
-		var arr = _win.location.search.substr(1).split("&");
+		var arr = window.location.search.substr(1).split("&");
 		for ( i in 0 ... arr.length ) {
 			var temp = arr[i].split("=");
 			map.set(temp[0],temp[1]);
@@ -105,9 +108,9 @@ class Main {
 	 */
 	function buildPresentation (md:String) : Void
 	{
-		var flexContainer = _doc.createDivElement();
+		var flexContainer = document.createDivElement();
 		flexContainer.className = 'slidrr-container';
-		_doc.body.appendChild(flexContainer);
+		document.body.appendChild(flexContainer);
 
 		var slides : Array<String> = md.split('\n'+App.spliteSlide+'\n');
 		_total = slides.length;
@@ -119,16 +122,16 @@ class Main {
 
 		// first build nav to generate all slides in it
 		buildNav();
-		var _nav = _doc.getElementsByClassName('nav')[0];
+		var _nav = document.getElementsByClassName('nav')[0];
 
 		// listen to keys
-		_win.onkeydown = function (e){
+		window.onkeydown = function (e){
 			onKeyHandler(e);
 		}
 
 		// listen to resize
 		// onResizeHandler ();
-		// _win.onresize = function (){
+		// window.onresize = function (){
 		// 	onResizeHandler();
 		// }
 
@@ -157,32 +160,32 @@ class Main {
 
 	function buildProgress () : Void
 	{
-		var _container = _doc.createDivElement();
+		var _container = document.createDivElement();
 		_container.className = "progress";
 
-		var _progressbar = _doc.createDivElement();
+		var _progressbar = document.createDivElement();
 		_progressbar.className = "progress-bar";
 
 		_container.appendChild(_progressbar);
-		_doc.body.appendChild(_container);
+		document.body.appendChild(_container);
 	}
 
 
 	function buildControle () : Void
 	{
-		var _container = _doc.createDivElement();
+		var _container = document.createDivElement();
 		_container.className = "controls";
 
-		var _arrowL = _doc.createDivElement();
+		var _arrowL = document.createDivElement();
 		_arrowL.className = "arrow left prev";
 		_arrowL.innerHTML = "";
-		var _arrowR = _doc.createDivElement();
+		var _arrowR = document.createDivElement();
 		_arrowR.className = "arrow right next";
 		_arrowR.innerHTML = "";
 
 		_container.appendChild(_arrowL);
 		_container.appendChild(_arrowR);
-		_doc.body.appendChild(_container);
+		document.body.appendChild(_container);
 
 		_arrowL.onclick = _arrowR.onclick = function (e){
 			onClickHandler(e);
@@ -192,34 +195,34 @@ class Main {
 
 	function buildHelp () : Void
 	{
-		var _container = _doc.createDivElement();
+		var _container = document.createDivElement();
 		_container.className = "help";
 		_container.innerHTML = Markdown.markdownToHtml(showDefaults());
-		_doc.body.appendChild(_container);
+		document.body.appendChild(_container);
 	}
 
 	function buildNav () : Void
 	{
-		var _container = _doc.createDivElement();
+		var _container = document.createDivElement();
 		_container.className = "nav";
 		_container.innerHTML = "<div class='mini-slide'>test</div>";
-		_doc.body.appendChild(_container);
+		document.body.appendChild(_container);
 	}
 
 
 	function buildFocus () : Void
 	{
-		var _container = _doc.createDivElement();
+		var _container = document.createDivElement();
 		_container.className = "focus";
-		_doc.body.appendChild(_container);
+		document.body.appendChild(_container);
 	}
 
 
 	function buildLogo() : Void
 	{
-		var _container = _doc.createDivElement();
+		var _container = document.createDivElement();
 		_container.className = "logo";
-		_doc.body.appendChild(_container);
+		document.body.appendChild(_container);
 	}
 
 	// ____________________________________ misc ____________________________________
@@ -231,8 +234,8 @@ class Main {
 	 */
 	function addCSS(css:String):Void
 	{
-		var head = _doc.getElementsByTagName('head')[0];
-    	var s = _doc.createElement('link');
+		var head = document.getElementsByTagName('head')[0];
+    	var s = document.createElement('link');
 	    s.setAttribute('rel', 'stylesheet');
 	    s.setAttribute('href', '${css}');
 	    head.appendChild(s);
@@ -277,7 +280,7 @@ class Main {
 	{
 		// trace('writeURL ($id)');
 		var url = '/' + Std.string(id);
-		_win.location.hash = url;
+		window.location.hash = url;
 	}
 
 	/**
@@ -285,7 +288,7 @@ class Main {
 	 */
 	function readURL () : Void
 	{
-		var hash = _win.location.hash;
+		var hash = window.location.hash;
 		var id = Std.parseInt ( hash.split('/')[1] );
 		if(id == null) id = 0;
 		// trace('readURL() $hash, $id');
@@ -327,7 +330,7 @@ class Main {
 
 	function toggleVisibleSlide(id:Int, isVisible:Bool) : Void
 	{
-		var slide = _doc.getElementById("slidrr-" + id);
+		var slide = document.getElementById("slidrr-" + id);
 		var css = slide.className.replace('hidden','').rtrim().replace('  ',' ');
 		slide.className = (isVisible) ? css : (css + " hidden");
 	}
@@ -336,7 +339,7 @@ class Main {
 	function updateProgress () : Void
 	{
 		var percentage = (_currentId/(_total-1))*100;
-		var progress =_doc.getElementsByClassName("progress-bar")[0];
+		var progress =document.getElementsByClassName("progress-bar")[0];
 		progress.style.width = Std.string(percentage) + '%';
 	}
 
@@ -347,7 +350,7 @@ class Main {
 		if(!isFullScreen)
 		{
 			isFullScreen = true;
-			var elem = _doc.documentElement;
+			var elem = document.documentElement;
 			if (untyped elem.requestFullscreen) {
 				untyped elem.requestFullscreen();
 			} else if (untyped elem.msRequestFullscreen) {
@@ -359,14 +362,14 @@ class Main {
 			}
 		} else {
 			isFullScreen = false;
-			if (untyped _doc.exitFullscreen) {
-				untyped _doc.exitFullscreen();
-			} else if (untyped _doc.msExitFullscreen) {
-				untyped _doc.msExitFullscreen();
-			} else if (untyped _doc.mozCancelFullScreen) {
-				untyped _doc.mozCancelFullScreen();
-			} else if (untyped _doc.webkitExitFullscreen) {
-				untyped _doc.webkitExitFullscreen();
+			if (untyped document.exitFullscreen) {
+				untyped document.exitFullscreen();
+			} else if (untyped document.msExitFullscreen) {
+				untyped document.msExitFullscreen();
+			} else if (untyped document.mozCancelFullScreen) {
+				untyped document.mozCancelFullScreen();
+			} else if (untyped document.webkitExitFullscreen) {
+				untyped document.webkitExitFullscreen();
 			}
 		}
 	}
@@ -374,7 +377,7 @@ class Main {
 
 	function toggleHelp () : Void {
 		trace('toggleHelp');
-		var help = _doc.getElementsByClassName('help')[0];
+		var help = document.getElementsByClassName('help')[0];
 		if(help.style.visibility == 'visible')
 		{
 			help.style.visibility = 'hidden';
@@ -387,7 +390,7 @@ class Main {
 
 	function toggleNav () : Void {
 		// trace('toggleNav');
-		var help = _doc.getElementsByClassName('nav')[0];
+		var help = document.getElementsByClassName('nav')[0];
 		if(help.style.visibility == 'visible')
 		{
 			help.style.visibility = 'hidden';
@@ -401,7 +404,7 @@ class Main {
 
 	function toggleFocus () : Void
 	{
-		var focus = _doc.getElementsByClassName('focus')[0];
+		var focus = document.getElementsByClassName('focus')[0];
 		if(focus.style.visibility == 'visible')
 		{
 			focus.style.visibility = 'hidden';
@@ -419,7 +422,7 @@ class Main {
 
 		// [mck] TODO :: check if window is open
 
-		// var notesPopup = _win.open( 'notes.html', 'Notes', 'width=1100,height=700' );
+		// var notesPopup = window.open( 'notes.html', 'Notes', 'width=1100,height=700' );
 
 		var html  = '
 <!DOCTYPE html>
@@ -471,7 +474,7 @@ class Main {
 </html>
 ';
 
-		notesPopup = _win.open('', 'Notes::','width=1100,height=700');
+		notesPopup = window.open('', 'Notes::','width=1100,height=700');
 		notesPopup.document.write(html);
 
 		// var timer = new haxe.Timer(6000); // 1000ms delay
@@ -482,7 +485,7 @@ class Main {
 		// }
 
 		//listen to holla back
-		_win.addEventListener('message',function(event) {
+		window.addEventListener('message',function(event) {
 			// if(event.origin !== 'http://scriptandstyle.com') return;
 			trace('received response: ' , event.data);
 		},false);
@@ -530,8 +533,8 @@ class Main {
 
 	function onResizeHandler () : Void
 	{
-		_width = _win.innerWidth;
-		_height = _win.innerHeight;
+		_width = window.innerWidth;
+		_height = window.innerHeight;
 	}
 
 	// ____________________________________ read markdown file ____________________________________

@@ -1,4 +1,4 @@
-#TODO
+# TODO
 
 ### block-quote
 
@@ -25,7 +25,7 @@ Synchronous XMLHttpRequest on the main thread is deprecated because of its detri
 
 
 
-#DONE
+# DONE
 
 ### fullscreen image hack
 
